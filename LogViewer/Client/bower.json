@@ -1,0 +1,21 @@
+{
+  "name": "adamsingle",
+  "version": "0.0.0",
+  "authors": [
+    "Adam <adam.single@realseriousgames.com>"
+  ],
+  "description": "A web app for viewing logs read from a MongoDB database. Logs are assumed to be in Serilog format.",
+  "main": "app.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.3.8",
+    "jquery": "~2.1.3"
+  }
+}

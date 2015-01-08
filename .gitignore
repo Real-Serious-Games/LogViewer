@@ -1,0 +1,6 @@
+*.dat
+*.suo
+*.sln
+*.log
+LogViewer/Client/bower_components/
+*.njsproj

@@ -1,0 +1,10 @@
+{
+  "name": "LogViewer",
+  "version": "0.0.0",
+  "description": "LogViewer",
+  "main": "server.js",
+  "author": {
+    "name": "adamsingle",
+    "email": "adam.single@realseriousgames.com"
+  }
+}
