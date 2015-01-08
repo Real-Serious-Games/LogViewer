@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <Name>LogViewer</Name>
+    <RootNamespace>LogViewer</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>603b70aa-83c6-4de6-bcce-8adae3e5a06d</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>Server\Src\server.js</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <ProjectView>ShowAllFiles</ProjectView>
+    <NodejsPort>1337</NodejsPort>
+    <StartWebBrowser>true</StartWebBrowser>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Client\SpecRunner\lib\jasmine-2.1.3\boot.js" />
+    <Compile Include="Client\SpecRunner\lib\jasmine-2.1.3\console.js" />
+    <Compile Include="Client\SpecRunner\lib\jasmine-2.1.3\jasmine-html.js" />
+    <Compile Include="Client\SpecRunner\lib\jasmine-2.1.3\jasmine.js" />
+    <Compile Include="Client\SpecRunner\spec\PlayerSpec.js" />
+    <Compile Include="Client\SpecRunner\spec\SpecHelper.js" />
+    <Compile Include="Client\SpecRunner\src\Player.js" />
+    <Compile Include="Client\SpecRunner\src\Song.js" />
+    <Compile Include="Client\Src\app.js" />
+    <Compile Include="Client\Tests\appSpec.js" />
+    <Compile Include="Server\Src\server.js" />
+    <Content Include="Client\bower.json" />
+    <Content Include="Client\SpecRunner\lib\jasmine-2.1.3\jasmine.css" />
+    <Content Include="Client\SpecRunner\lib\jasmine-2.1.3\jasmine_favicon.png" />
+    <Content Include="Client\SpecRunner\MIT.LICENSE" />
+    <Content Include="Client\SpecRunner\SpecRunner.html" />
+    <Content Include="Client\Src\index.html" />
+    <Content Include="Client\Src\npm-debug.log" />
+    <Content Include="package.json" />
+    <Content Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Client\" />
+    <Folder Include="Client\SpecRunner\" />
+    <Folder Include="Client\SpecRunner\lib\" />
+    <Folder Include="Client\SpecRunner\lib\jasmine-2.1.3\" />
+    <Folder Include="Client\SpecRunner\spec\" />
+    <Folder Include="Client\SpecRunner\src\" />
+    <Folder Include="Client\Tests\" />
+    <Folder Include="Client\Src\" />
+    <Folder Include="Server\" />
+    <Folder Include="Server\Tests\" />
+    <Folder Include="Server\Src\" />
+  </ItemGroup>
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:48022/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost:1337</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
