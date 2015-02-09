@@ -34,13 +34,10 @@
     <Compile Include="Client\SpecRunner\lib\jasmine-2.1.3\console.js" />
     <Compile Include="Client\SpecRunner\lib\jasmine-2.1.3\jasmine-html.js" />
     <Compile Include="Client\SpecRunner\lib\jasmine-2.1.3\jasmine.js" />
-    <Compile Include="Client\SpecRunner\spec\PlayerSpec.js" />
-    <Compile Include="Client\SpecRunner\spec\SpecHelper.js" />
-    <Compile Include="Client\SpecRunner\src\Player.js" />
-    <Compile Include="Client\SpecRunner\src\Song.js" />
     <Compile Include="Client\Src\app.js" />
     <Compile Include="Client\Tests\appSpec.js" />
     <Compile Include="Server\Src\server.js" />
+    <Compile Include="Server\Tests\server.spec.js" />
     <Content Include="Client\bower.json" />
     <Content Include="Client\SpecRunner\lib\jasmine-2.1.3\jasmine.css" />
     <Content Include="Client\SpecRunner\lib\jasmine-2.1.3\jasmine_favicon.png" />
@@ -56,8 +53,6 @@
     <Folder Include="Client\SpecRunner\" />
     <Folder Include="Client\SpecRunner\lib\" />
     <Folder Include="Client\SpecRunner\lib\jasmine-2.1.3\" />
-    <Folder Include="Client\SpecRunner\spec\" />
-    <Folder Include="Client\SpecRunner\src\" />
     <Folder Include="Client\Tests\" />
     <Folder Include="Client\Src\" />
     <Folder Include="Server\" />
