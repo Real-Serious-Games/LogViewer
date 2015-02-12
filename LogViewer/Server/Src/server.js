@@ -48,9 +48,9 @@ var addClient = function (client) {
 ///
 var removeClient = function (client) {
     console.log('Attempting to remove client: ' + client.toString());
-    var i = array.indexOf(client);
+    var i = clients.indexOf(client);
     if (i != -1) {
         console.log('Client was found in the list of clients');
-        array.splice(i, 1);
+        clients.splice(i, 1);
     }
 };
