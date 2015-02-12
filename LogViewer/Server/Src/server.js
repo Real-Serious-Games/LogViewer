@@ -26,6 +26,11 @@ var clients = [];
 ///
 io.sockets.on('connection', function (client) {
     addClient(client);
+    
+    //when the connected client sends a connectToDB call set up the connection
+    client.on('connectToDB', function (host, database, collection) {
+        console.log('Client requesting a connection to database collection: ' + collection + ' from database: ' + database + ' on host: ' + host);
+    });
         
     ///
     /// Disconnect

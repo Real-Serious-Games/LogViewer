@@ -26,4 +26,11 @@ angular.module('app', [
     // Setup the application data-model.
     //
     $scope.dataBindingTest = "Hello World";
+    
+    //
+    // Request the server connect to the given database collection
+    //
+    $scope.connectToDB = function (host, database, collection) {
+        socket.emit("connectToDB", host, database, collection);
+    };
 })
