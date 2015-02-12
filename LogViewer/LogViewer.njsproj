@@ -43,7 +43,7 @@
     <Content Include="Client\SpecRunner\lib\jasmine-2.1.3\jasmine_favicon.png" />
     <Content Include="Client\SpecRunner\MIT.LICENSE" />
     <Content Include="Client\SpecRunner\SpecRunner.html" />
-    <Content Include="Client\Src\index.html" />
+    <Content Include="Client\index.html" />
     <Content Include="Client\Src\npm-debug.log" />
     <Content Include="package.json" />
     <Content Include="README.md" />
