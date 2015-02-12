@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 
 app.use(
     '/',
-    express.static(path.join(__dirname, './Client'))
+    express.static(path.join(__dirname, '../../Client'))
 );
 
 var server = app.listen(process.env.PORT || 3412);
@@ -26,16 +26,7 @@ var clients = [];
 ///
 io.sockets.on('connection', function (client) {
     addClient(client);
-    //when the connected client sends a connectToDB call set up the connection
-    client.on('connectToDB', function (host, database, collection) {
-        db = pmongo(host + '/' + database);
-        var collection = db.collection(collection);
-        var cursor = collection.find({}, {}, { tailable: true, timeout: false });
-        cursor.on('data', function (doc) {
-            client.emit('update', doc);
-        });
-    });
-    
+        
     ///
     /// Disconnect
     ///
