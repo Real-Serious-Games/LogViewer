@@ -30,6 +30,13 @@ io.sockets.on('connection', function (client) {
     //when the connected client sends a connectToDB call set up the connection
     client.on('connectToDB', function (host, database, collection) {
         console.log('Client requesting a connection to database collection: ' + collection + ' from database: ' + database + ' on host: ' + host);
+        db = pmongo(host + '/' + database);
+        var collection = db.collection(collection);
+        var cursor = collection.find({}, {}, { tailable: true, timeout: false });
+        cursor.on('data', function (doc) {
+            console.log('New data in the database, sending to client');
+            client.emit('update', doc);
+        });
     });
         
     ///
