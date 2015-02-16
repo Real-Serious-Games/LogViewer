@@ -12,7 +12,7 @@ exports.addClient = function (client) {
 /// Remove a client from the list of connected clients
 ///
 exports.removeClient = function (client) {
-    console.log('Attempting to remove client: ' + this.client.toString());
+    console.log('Attempting to remove client: ' + client.toString());
     var i = this.clients.indexOf(client);
     if (i != -1) {
         console.log('Client was found in the list of clients');
