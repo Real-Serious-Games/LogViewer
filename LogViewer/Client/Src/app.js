@@ -25,5 +25,14 @@ angular.module('app', [
     //
     // Setup the application data-model.
     //
-    $scope.dataBindingTest = "Hello World";
+
+    //running log of data received from the server
+    $scope.logData = [];
+    
+    ///
+    /// The update function from the server
+    ///
+    socket.on('update', function (data) {
+        $scope.logData.push(data);
+    })
 })

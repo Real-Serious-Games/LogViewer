@@ -3,7 +3,6 @@
     <title>LogViewer</title>
 </head>
 <body ng-app="app" ng-controller="AppCtrl">
-    {{dataBindingTest}}
     <!-- Library code. -->
     <script src="bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
     <script src="bower_components/angular/angular.js" type="text/javascript"></script>
@@ -11,5 +10,9 @@
     <script src="bower_components/socket.io-client/socket.io.js" type="text/javascript"></script>
     <!-- App code. -->
     <script src="Src/app.js" type="text/javascript"></script>
+
+    <div ng-repeat="data in logData.slice().reverse() | limitTo:10">
+        {{data.Timestamp | date:'dd/MM/yyyy @ h:mma'}} : "{{data.MessageTemplate}}" from {{data.Properties.UserName}}
+    </div>
 </body>
 </html>
