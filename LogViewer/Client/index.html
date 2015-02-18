@@ -24,7 +24,7 @@
     <!-- App code. -->
     <script src="Src/app.js" type="text/javascript"></script>
 
-    <div ng-repeat="data in logData.slice().reverse() | limitTo:10">
+    <div ng-repeat="data in logData">
         {{data.Timestamp | date:'dd/MM/yyyy @ h:mma'}} : "{{data.MessageTemplate}}" from {{data.Properties.UserName}}
     </div>
 </body>

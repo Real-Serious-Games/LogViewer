@@ -33,6 +33,6 @@ angular.module('app', [
     /// The update function from the server
     ///
     socket.on('update', function (data) {
-        $scope.logData.push(data);
+        $scope.logData.splice(0, 0, data);
     })
 })
