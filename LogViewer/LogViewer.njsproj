@@ -45,6 +45,8 @@
     <Content Include="Client\SpecRunner\MIT.LICENSE" />
     <Content Include="Client\SpecRunner\SpecRunner.html" />
     <Content Include="Client\index.html" />
+    <Content Include="Client\Src\app.css" />
+    <Content Include="Client\Src\base.css" />
     <Content Include="Client\Src\npm-debug.log" />
     <Content Include="package.json" />
     <Content Include="README.md" />
