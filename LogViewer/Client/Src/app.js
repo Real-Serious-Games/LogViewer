@@ -29,10 +29,18 @@ angular.module('app', [
     //running log of data received from the server
     $scope.logData = [];
     
+    $scope.selectedLog = null;
+    
+
+    $scope.selectLog = function (data) {
+        $scope.selectedLog = data;
+    };
+    
     ///
     /// The update function from the server
     ///
     socket.on('update', function (data) {
         $scope.logData.splice(0, 0, data);
+        $scope.selectedLog = data;
     })
 })
