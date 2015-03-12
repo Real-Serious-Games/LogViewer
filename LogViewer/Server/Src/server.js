@@ -39,8 +39,16 @@ io.sockets.on('connection', function (client) {
     db = pmongo(host + '/' + database);
     var collection = db.collection(collectionName);
     var cursor = collection.find({}, {}, { tailable: true, timeout: false });
-    cursor.on('data', function (doc) {
-        console.log('New data in the database, sending to client');
+    //cursor.on('data', function (doc) {
+    //    console.log('received data from error log, pushing to client');
+    //    client.emit('update', doc);
+    //});
+    
+    var logCollection = db.collection('unity.build.logs');
+    var logCursor = logCollection.find({}, {}, { tailable: true, timeout: false });
+    console.log('Connecting client to database collection: ' + logCollection + ' from database: ' + database + ' on host: ' + host);
+    logCursor.on('data', function (doc) {
+        console.log('received data from log, pushing to client: ' + doc.RenderedMessage.toString());
         client.emit('update', doc);
     });
         
