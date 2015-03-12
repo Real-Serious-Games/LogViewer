@@ -3,11 +3,11 @@
 }
 
 .header {
-    border-bottom:solid black 1px;
+    margin-left: 15px;
 }
 
 .log-detail {
-    width: 50em;
+    width: 650px;
 }
 
 .log-panel {
@@ -16,4 +16,14 @@
 
 .log-details-panel {
     margin: 1em;
+}
+
+.truncate {
+  text-overflow: ellipsis;
+}
+
+.clearLogBtn {
+    width: 100px;
+    height: 40px;
+    margin-right: 15px;
 }

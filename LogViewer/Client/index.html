@@ -26,9 +26,13 @@
 
     <div>
         <div class="header row-layout">
-            <h2 class="flex-fill">RSG LogViewer</h2>
+            <h3 class="flex-fill">RSG LogViewer</h3>
 
-            <div class="dropdown">
+            <div class="vertical-center-child">
+                <button class="clearLogBtn" id="dLabel" type="button" ng-click="clearLog()">Clear Log</button>
+            </div>
+
+            <!--<div class="dropdown">
                 <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Dropdown trigger
                     <span class="caret"></span>
@@ -44,7 +48,7 @@
                         MenuItem
                     </li>
                 </ul>
-            </div>
+            </div>-->
 
         </div>
         <div class="content row-layout">
@@ -75,19 +79,21 @@
                                 class=""
                                 ng-click="selectLog(data)"
                                 ng-class="{
-                            'active': selectedLog === data,
-                        }">
+                                        'active': selectedLog === data,
+                                    }">
                                 <td>{{data.Timestamp | date:'dd/MM/yyyy @ h:mma'}}</td>
                                 <td>
                                     <span class="label"
                                           ng-class="{
                                     'label-danger': data.Level === 'Error',
                                     'label-info': data.Level === 'Information',
+                                    'label-warning': data.Level === 'Warning',
                                 }">
                                         {{data.Level}}
                                     </span>
                                 </td>
-                                <td>{{data.RenderedMessage}}</td>
+
+                                <td class="log-message">{{truncate(data.RenderedMessage)}}</td>
                                 <td>{{data.Properties.UserName}}</td>
                             </tr>
                         </tbody>
@@ -106,16 +112,15 @@
                             <td>{{selectedLog.Timestamp | date:'dd/MM/yyyy @ h:mma'}}</td>
                         </tr>
                         <tr ng-repeat="(k,v) in selectedLog.Properties">
-                            <td>{{k}}</td>
-                            <td>{{v}}</td>
+                            <td><div class="truncate">{{k}}</div></td>
+                            <td><div class="truncate">{{v}}</div></td>
                         </tr>
                         <tr>
                             <td>Message</td>
-                            <td>{{selectedLog.RenderedMessage}}</td>
+                            <td><div class="truncate">{{selectedLog.RenderedMessage}}</div></td>
                         </tr>
                     </table>
                 </div>
-                {{selectedLog | json}}
             </div>
         </div>
     </div>
