@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var pmongo = require('promised-mongo');
 var path = require('path');
 var clientManager = require('./ConnectionManager.js');
+var config = require('./config.js');
 
 var database;
 
@@ -15,18 +16,7 @@ app.use(
     express.static(path.join(__dirname, '../../Client'))
 );
 
-///
-/// Database information
-///
-var config = {
-    host: "dbtest-PC",
-    port: 3412,
-    database: "logs",
-    errorsCollectionName: "unity.build.errors",
-    logCollectionName: "unity.build.logs",
-};
-
-var server = app.listen(process.env.PORT || config.port);
+var server = app.listen(process.env.PORT || config.config.port);
 var io = socketio.listen(server);
 
 var data;
@@ -39,17 +29,17 @@ io.sockets.on('connection', function (client) {
     clientManager.addClient(client);
     
     //connect the client to the errors database.
-    console.log('Connecting client to database collection: ' + config.errorsCollectionName + ' from database: ' + config.database + ' on host: ' + config.host);
-    db = pmongo(config.host + '/' + config.database);
-    var collection = db.collection(config.errorsCollectionName);
+    console.log('Connecting client to database collection: ' + config.config.errorsCollectionName + ' from database: ' + config.config.database + ' on host: ' + config.config.host);
+    db = pmongo(config.config.host + '/' + config.config.database);
+    var collection = db.collection(config.config.errorsCollectionName);
     var cursor = collection.find({}, {}, { tailable: true, timeout: false });
     //cursor.on('data', function (doc) {
     //    console.log('received data from error log, pushing to client');
     //    client.emit('update', doc);
     //});
-    var logCollection = db.collection(config.logCollectionName);
+    var logCollection = db.collection(config.config.logCollectionName);
     var logCursor = logCollection.find({}, {}, { tailable: true, timeout: false });
-    console.log('Connecting client to database collection: ' + config.logCollectionName + ' from database: ' + config.database + ' on host: ' + config.host);
+    console.log('Connecting client to database collection: ' + config.config.logCollectionName + ' from database: ' + config.config.database + ' on host: ' + config.config.host);
     logCursor.on('data', function (doc) {
         console.log('received data from log, pushing to client: ' + doc.RenderedMessage.toString());
         client.emit('update', doc);
