@@ -16,9 +16,8 @@ app.use(
     express.static(path.join(__dirname, '../../Client'))
 );
 
-var server = app.listen(process.env.PORT || config.config.port);
+var server = app.listen(config.config.port);
 var io = socketio.listen(server);
-console.log('Server running on port ' + server.port );
 var data;
 
 ///
