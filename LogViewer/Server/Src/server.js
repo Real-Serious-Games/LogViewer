@@ -18,7 +18,7 @@ app.use(
 
 var server = app.listen(process.env.PORT || config.config.port);
 var io = socketio.listen(server);
-
+console.log('Server running on port ' + server.port );
 var data;
 
 ///
