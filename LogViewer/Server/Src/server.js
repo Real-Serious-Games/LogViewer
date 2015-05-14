@@ -32,10 +32,10 @@ io.sockets.on('connection', function (client) {
     db = pmongo(config.config.host + '/' + config.config.database);
     var collection = db.collection(config.config.errorsCollectionName);
     var cursor = collection.find({}, {}, { tailable: true, timeout: false });
-    //cursor.on('data', function (doc) {
-    //    console.log('received data from error log, pushing to client');
-    //    client.emit('update', doc);
-    //});
+    cursor.on('data', function (doc) {
+       console.log('received data from error log, pushing to client');
+       client.emit('update', doc);
+    });
     var logCollection = db.collection(config.config.logCollectionName);
     var logCursor = logCollection.find({}, {}, { tailable: true, timeout: false });
     console.log('Connecting client to database collection: ' + config.config.logCollectionName + ' from database: ' + config.config.database + ' on host: ' + config.config.host);
