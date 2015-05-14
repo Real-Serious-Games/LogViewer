@@ -26,6 +26,8 @@ angular.module('app', [
     // Setup the application data-model.
     //
 
+    var socket = socketFactory();
+    
     //running log of data received from the server
     $scope.logData = [];
     
