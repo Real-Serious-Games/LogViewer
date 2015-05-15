@@ -28,6 +28,25 @@ angular.module('app', [
 
     var socket = socketFactory();
 
+    socket.on('update', function (data) {
+        $scope.logData.splice(0, 0, data);
+        $scope.selectedLog = data;
+    });
+
+    socket.on('populate', function(data) {
+        $scope.logData = data;
+    });
+
+    socket.on('connect', function(server) {
+        $http.get('/update')
+            .then(function(results) {
+                $scope.logData = results.data;
+            })
+            .catch(function(err) {
+                $log.error(err);
+            });
+    });
+
     //running log of data received from the server
     $scope.logData = [];
     
@@ -61,12 +80,6 @@ angular.module('app', [
     $http.get('/update')
         .then(function(results) {
             $scope.logData = results.data;
-
-            socket.on('update', function (data) {
-                console.log('update received from server. New log: ' + data.RenderedMessage.toString());
-                $scope.logData.splice(0, 0, data);
-                $scope.selectedLog = data;
-            });
         })
         .catch(function(err) {
             $log.error(err);
