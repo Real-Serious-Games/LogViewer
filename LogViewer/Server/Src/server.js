@@ -34,22 +34,22 @@ var server = app.listen(process.env.PORT || config.config.port, function() {
     errorCollection = db.collection(config.config.errorsCollectionName);
     //set up tailable cursors for each
 
-    logsCursor = logsCollection.find({}, {}, { tailable: true, timeout: false, awaitdata: true });
-    errorsCursor = errorCollection.find({}, {}, { tailable: true, timeout: false, awaitdata: true });
+    logsCursor = logsCollection.find({}, {}, { tailable: true, timeout: false });
+    errorsCursor = errorCollection.find({}, {}, { tailable: true, timeout: false });
 
-    // logsCursor.on('data', function(doc) {
-    //     clientManager.allClients()
-    //         .forEach(function(client) {
-    //             client.emit('update', doc);
-    //         });
-    // });
+    logsCursor.on('data', function(doc) {
+        clientManager.clients
+            .forEach(function(client) {
+                client.emit('update', doc);
+            });
+    });
 
-    // errorsCursor.on('data', function(doc) {
-    //     clientManager.allClients()
-    //         .forEach(function(client) {
-    //             client.emit('update', doc);
-    //         });
-    // });
+    errorsCursor.on('data', function(doc) {
+        clientManager.clients
+            .forEach(function(client) {
+                client.emit('update', doc);
+            });
+    });
 
     //populate starting data and notify any already connected clients
     logsCollection
