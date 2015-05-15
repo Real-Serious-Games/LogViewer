@@ -29,18 +29,29 @@ angular.module('app', [
     var socket = socketFactory();
 
     socket.on('update', function (data) {
+        data.sort(function(a, b) {
+                return a.Timestamp < b.Timestamp;
+            });
         $scope.logData.splice(0, 0, data);
         $scope.selectedLog = data;
     });
 
     socket.on('populate', function(data) {
+        data.sort(function(a, b) {
+                return a.Timestamp < b.Timestamp;
+            });
         $scope.logData = data;
+        $scope.selectedLog = data[0];
     });
 
     socket.on('connect', function(server) {
         $http.get('/update')
             .then(function(results) {
+                results.data.sort(function(a, b) {
+                    return a.Timestamp < b.Timestamp;
+                });
                 $scope.logData = results.data;
+                $scope.selectedLog = $scope.logData[0];
             })
             .catch(function(err) {
                 $log.error(err);
@@ -80,6 +91,7 @@ angular.module('app', [
     $http.get('/update')
         .then(function(results) {
             $scope.logData = results.data;
+            $scope.selectedLog = $scope.logData[0];
         })
         .catch(function(err) {
             $log.error(err);
