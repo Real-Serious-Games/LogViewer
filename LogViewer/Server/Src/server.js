@@ -64,7 +64,11 @@ var server = app.listen(process.env.PORT || config.config.port, function() {
             .then(function(errorDocs) {
                 console.log('Error collection retreived from database');
                 data = data.concat(errorDocs);
-                clientManager.allClients().emit('update', data);
+                clientManager.clients
+                    .forEach(function(client) {
+                        console.log('populating client');
+                        client.emit('populate', data);
+                    });
             });
         });
 
