@@ -17,12 +17,5 @@
 	    if (i != -1) {
 	        console.log('Client was found in the list of clients');
 	        this.clients.splice(i, 1);
-    };
-
-    ///
-    /// Return the list of clients
-    ///
-	exports.allClients = function() {
-		return this.clients;
+    	}
 	};
-};
