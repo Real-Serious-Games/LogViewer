@@ -21,13 +21,13 @@ angular.module('app', [
 //
 // Application controller.
 //
-.controller('AppCtrl', function AppCtrl($scope, socketFactory) {
+.controller('AppCtrl', function AppCtrl($scope, $http, $log, socketFactory) {
     //
     // Setup the application data-model.
     //
 
     var socket = socketFactory();
-    
+
     //running log of data received from the server
     $scope.logData = [];
     
@@ -58,12 +58,17 @@ angular.module('app', [
         return firstLine + "...";
     };
     
-    ///
-    /// The update function from the server
-    ///
-    socket.on('update', function (data) {
-        console.log('update received from server. New log: ' + data.RenderedMessage.toString());
-        $scope.logData.splice(0, 0, data);
-        $scope.selectedLog = data;
-    })
-})
+    $http.get('/update')
+        .then(function(results) {
+            $scope.logData = results.data;
+
+            socket.on('update', function (data) {
+                console.log('update received from server. New log: ' + data.RenderedMessage.toString());
+                $scope.logData.splice(0, 0, data);
+                $scope.selectedLog = data;
+            });
+        })
+        .catch(function(err) {
+            $log.error(err);
+        });
+});
