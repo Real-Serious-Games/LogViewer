@@ -51,7 +51,7 @@ var server = app.listen(process.env.PORT || config.config.port, function() {
     //         });
     // });
 
-    //populate starting data
+    //populate starting data and notify any already connected clients
     logsCollection
         .find()
         .toArray()
@@ -88,27 +88,6 @@ var data = [];
 io.sockets.on('connection', function (client) {
     //add client to client manager
     clientManager.addClient(client);
-
-    //client.emit('update', data);
-    
-    //connect the client to the errors database.
-    // console.log('Connecting client to database collection: ' + config.config.errorsCollectionName + ' from database: ' + config.config.database + ' on host: ' + config.config.host);
-    // db = pmongo(config.config.host + '/' + config.config.database);
-    // var collection = db.collection(config.config.errorsCollectionName);
-    // var cursor = collection.find({}, {}, { tailable: true, timeout: false });
-    // cursor.on('data', function (doc) {
-    //    console.log('received data from error log, pushing to client');
-    //    client.emit('update', doc);
-    // });
-
-
-    // var logCollection = db.collection(config.config.logCollectionName);
-    // var logCursor = logCollection.find({}, {}, { tailable: true, timeout: false });
-    // console.log('Connecting client to database collection: ' + config.config.logCollectionName + ' from database: ' + config.config.database + ' on host: ' + config.config.host);
-    // logCursor.on('data', function (doc) {
-    //     console.log('received data from log, pushing to client: ' + doc.RenderedMessage.toString());
-    //     client.emit('update', doc);
-    // });
         
     ///
     /// Disconnect
