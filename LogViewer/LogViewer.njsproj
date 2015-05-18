@@ -163,6 +163,7 @@
     <Compile Include="Client\SpecRunner\lib\jasmine-2.1.3\jasmine.js" />
     <Compile Include="Client\Src\app.js" />
     <Compile Include="Client\Tests\appSpec.js" />
+    <Compile Include="Server\Src\config.js" />
     <Compile Include="Server\Src\ConnectionManager.js" />
     <Compile Include="Server\Src\server.js" />
     <Compile Include="Server\Tests\server.spec.js" />

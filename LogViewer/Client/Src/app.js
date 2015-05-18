@@ -29,9 +29,6 @@ angular.module('app', [
     var socket = socketFactory();
 
     socket.on('update', function (data) {
-        data.sort(function(a, b) {
-                return a.Timestamp < b.Timestamp;
-            });
         $scope.logData.splice(0, 0, data);
         $scope.selectedLog = data;
     });
