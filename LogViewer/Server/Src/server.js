@@ -42,7 +42,7 @@ app.get('/logs', function(req, res) {
         .find()
         .toArray()
         .then(function(logs) {            
-            res.json(logs);
+            res.json(logs.reverse());
         });
 });
 
