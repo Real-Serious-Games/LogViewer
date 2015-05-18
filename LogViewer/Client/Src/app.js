@@ -22,43 +22,31 @@ angular.module('app', [
 // Application controller.
 //
 .controller('AppCtrl', function AppCtrl($scope, $http, $log, socketFactory) {
-    //
-    // Setup the application data-model.
-    //
-
-    var socket = socketFactory();
-
-    socket.on('update', function (data) {
-        $scope.logData.splice(0, 0, data);
-        $scope.selectedLog = data;
-    });
-
-    socket.on('populate', function(data) {
-        data.sort(function(a, b) {
-                return a.Timestamp < b.Timestamp;
-            });
-        $scope.logData = data;
-        $scope.selectedLog = data[0];
-    });
-
-    socket.on('connect', function(server) {
-        $http.get('/update')
-            .then(function(results) {
-                results.data.sort(function(a, b) {
-                    return a.Timestamp < b.Timestamp;
-                });
-                $scope.logData = results.data;
-                $scope.selectedLog = $scope.logData[0];
-            })
-            .catch(function(err) {
-                $log.error(err);
-            });
-    });
 
     //running log of data received from the server
     $scope.logData = [];
     
     $scope.selectedLog = null;
+
+    $http.get('/logs')
+        .then(function(results) {
+            assert.isArray(results.data);
+
+            $scope.logData = results.data;
+            $scope.selectedLog = $scope.logData[0];
+
+            var socket = socketFactory();
+            socket.on('update', function (newLog) {
+                assert.isObject(newLog);
+
+                $scope.logData.splice(0, 0, newLog);                
+                $scope.selectedLog = newLog;
+            });
+        })
+        .catch(function(err) {
+            $log.error(err);
+        });
+
     
     $scope.clearLog = function () {
         $scope.logData = [];
@@ -84,13 +72,4 @@ angular.module('app', [
         }
         return firstLine + "...";
     };
-    
-    $http.get('/update')
-        .then(function(results) {
-            $scope.logData = results.data;
-            $scope.selectedLog = $scope.logData[0];
-        })
-        .catch(function(err) {
-            $log.error(err);
-        });
 });

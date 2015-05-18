@@ -36,7 +36,7 @@ var server = app.listen(process.env.PORT || config.config.port, function() {
 });
 
 //client call for data
-app.get('/update', function(req, res) {
+app.get('/logs', function(req, res) {
 
     logsCollection
         .find()
