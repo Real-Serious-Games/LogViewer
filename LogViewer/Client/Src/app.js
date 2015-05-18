@@ -1,4 +1,5 @@
 ﻿
+
 //
 // Define the 'app' module.
 //
@@ -16,7 +17,7 @@ angular.module('app', [
     
     $scope.selectedLog = null;
 
-    $http.get('/logs')
+    $http.get('logs')
         .then(function(results) {
             assert.isArray(results.data);
 

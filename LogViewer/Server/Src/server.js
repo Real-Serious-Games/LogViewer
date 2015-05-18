@@ -7,18 +7,18 @@ var path = require('path');
 var clientManager = require('./ConnectionManager.js');
 var config = require('./config.js');
 
-var db = pmongo(config.config.host + '/' + config.config.database);
-var logsCollection = db.collection(config.config.logCollectionName);
+var db = pmongo(config.host + '/' + config.database);
+var logsCollection = db.collection(config.logCollectionName);
 
 app.use(bodyParser.json());
 
 app.use(
-    '/',
+    '/' + config.secret,
     express.static(path.join(__dirname, '../../Client'))
 );
 
 //St up the server, hook up to the database and preload the data that is currently in there
-var server = app.listen(process.env.PORT || config.config.port, function() {
+var server = app.listen(process.env.PORT || config.port, function() {
 
     console.log('establishing connection with the database');
     //set up tailable cursors for each
@@ -36,8 +36,7 @@ var server = app.listen(process.env.PORT || config.config.port, function() {
 });
 
 //client call for data
-app.get('/logs', function(req, res) {
-
+app.get('/' + config.secret + '/logs', function(req, res) {
     logsCollection
         .find()
         .toArray()
