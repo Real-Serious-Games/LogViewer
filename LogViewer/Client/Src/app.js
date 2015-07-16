@@ -18,6 +18,7 @@ angular.module('app', [
     $scope.selectedLog = null;
 
     $scope.query = "";
+    $scope.propertyQuery = "AppInstanceID";
 
     $http.get('logs')
         .then(function(results) {
@@ -69,6 +70,11 @@ angular.module('app', [
             return true;
         }
 
-        return element.Properties.UserName === $scope.query;
+        var propertyValue = element.Properties[$scope.propertyQuery].toLowerCase();
+        return propertyValue.indexOf($scope.query.toLowerCase()) === 0;
+    };
+
+    $scope.setPropertyQuery = function(property) {
+        $scope.propertyQuery = property;
     };
 });

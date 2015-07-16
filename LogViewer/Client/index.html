@@ -37,6 +37,24 @@
             <div class="vertical-center-child">
                 <button class="clearLogBtn" id="dLabel" type="button" ng-click="clearLog()">Clear Log</button>
                 <input ng-model="query" type="text" placeholder="User Name" autofocus>
+                <div class="dropdown">
+                    <button 
+                        class="btn btn-default dropdown-toggle" 
+                        type="button" 
+                        id="dropdownPropertySelector" 
+                        data-toggle="dropdown" 
+                        aria-haspopup="true" 
+                        aria-expand="true"
+                    >
+                            Filter Property
+                            <span class="carat"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-laeblledby="dropdownPropertySelector">
+                        <li><a href="#" ng-click="setPropertyQuery('UserName')">Username</a></li>
+                        <li><a href="#" ng-click="setPropertyQuery('AppInstanceID')">App Instance</a></li>
+                        <li><a href="#" ng-click="setPropertyQuery('MachineName')">Machine Name</a></li>
+                    </ul>
+                </div>
             </div>
 
             <!--<div class="dropdown">
