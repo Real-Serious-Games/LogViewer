@@ -3,11 +3,15 @@
 }
 
 .header {
+	display: block;
     margin-left: 15px;
 }
 
 .log-detail {
     width: 650px;
+    position: fixed;
+    top: 0;
+    right: 0;
 }
 
 .log-panel {
@@ -16,6 +20,10 @@
 
 .log-details-panel {
     margin: 1em;
+}
+
+.log-list {
+	justify-content: flex-start;
 }
 
 .truncate {
