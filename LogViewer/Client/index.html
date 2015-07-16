@@ -36,6 +36,7 @@
             <h3 class="header">RSG LogViewer</h3>
             <div class="vertical-center-child">
                 <button class="clearLogBtn" id="dLabel" type="button" ng-click="clearLog()">Clear Log</button>
+                <input ng-model="query" type="text" placeholder="User Name" autofocus>
             </div>
 
             <!--<div class="dropdown">
@@ -81,7 +82,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="data in logData"
+                            <tr ng-repeat="data in logData | filter: filterLogs"
                                 class=""
                                 ng-click="selectLog(data)"
                                 ng-class="{

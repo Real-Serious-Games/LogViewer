@@ -17,6 +17,8 @@ angular.module('app', [
     
     $scope.selectedLog = null;
 
+    $scope.query = "";
+
     $http.get('logs')
         .then(function(results) {
             assert.isArray(results.data);
@@ -60,5 +62,13 @@ angular.module('app', [
             firstLine = firstLine.substring(0, maxLineLen);
         }
         return firstLine + "...";
+    };
+
+    $scope.filterLogs = function(element) {
+        if($scope.query === "") {
+            return true;
+        }
+
+        return element.Properties.UserName === $scope.query;
     };
 });
