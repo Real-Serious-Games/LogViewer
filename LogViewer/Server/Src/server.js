@@ -23,16 +23,19 @@ var server = app.listen(process.env.PORT || config.port, function() {
     console.log('establishing connection with the database');
     //set up tailable cursors for each
 
+
+    logsCollection.find().toArray().then(function() { 
+        console.log('database connection established');
+    });
+
     var logsCursor = logsCollection.find({}, {}, { tailable: true, timeout: false });
 
-    logsCursor.on('data', function(doc) {
+    logsCursor.on('data', function(doc) {        
         clientManager.clients
             .forEach(function(client) {
                 client.emit('update', doc);
             });
     });
-
-
 });
 
 //client call for data
