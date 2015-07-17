@@ -66,12 +66,12 @@ angular.module('app', [
     };
 
     $scope.filterLogs = function(element) {
-        if($scope.query === "") {
+        if (!$scope.query) {
             return true;
         }
 
         var propertyValue = element.Properties[$scope.propertyQuery].toLowerCase();
-        return propertyValue.indexOf($scope.query.toLowerCase()) === 0;
+        return propertyValue.indexOf($scope.query.toLowerCase()) >= 0;
     };
 
     $scope.setPropertyQuery = function(property) {
