@@ -1,4 +1,5 @@
 *.dat
 *.log
 LogViewer/Client/bower_components/
+LogViewer/Server/Src/config.js
 *.suo
