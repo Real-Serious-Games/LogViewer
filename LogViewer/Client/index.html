@@ -36,7 +36,7 @@
             <h3 class="header">RSG LogViewer</h3>
             <div class="vertical-center-child">
                 <button class="clearLogBtn" id="dLabel" type="button" ng-click="clearLog()">Clear Log</button>
-                <input ng-model="query" type="text" placeholder="User Name" autofocus>
+                <input ng-model="query" type="text" placeholder="Filter on:" autofocus>
                 <!--
                 <div class="dropdown">
                     <button 
@@ -94,9 +94,9 @@
                                 <td>
                                     <span class="label"
                                           ng-class="{
-                                    'label-danger': data.Level === 'Error',
-                                    'label-info': data.Level === 'Information',
-                                    'label-warning': data.Level === 'Warning',
+                                    'label-danger': data.Level.toLowerCase() === 'error',
+                                    'label-info': data.Level.toLowerCase() === 'information',
+                                    'label-warning': data.Level.toLowerCase() === 'warning',
                                 }">
                                         {{data.Level}}
                                     </span>
