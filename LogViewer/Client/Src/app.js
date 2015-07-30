@@ -31,8 +31,7 @@ angular.module('app', [
             socket.on('update', function (newLog) {
                 assert.isObject(newLog);
 
-                $scope.logData.splice(0, 0, newLog);                
-                $scope.selectedLog = newLog;
+                $scope.logData.splice(0, 0, newLog); 
             });
         })
         .catch(function(err) {
