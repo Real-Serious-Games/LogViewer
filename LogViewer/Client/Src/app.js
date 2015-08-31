@@ -5,6 +5,7 @@
 //
 angular.module('app', [
     'btford.socket-io',
+    'infinite-scroll'
 ])
 
 //
@@ -15,11 +16,21 @@ angular.module('app', [
     //running log of data received from the server
     $scope.logData = [];
 
+    //a subset of logData with the current filterText applied to it
+    $scope.filteredLogs = $scope.logData;
+
+    //the currently truncated subsection of filteredLogs that we are rendering, using an infinite scroll to 
+    //append more filtered logs when needed
     $scope.visibleLogs = $scope.logData;
 
+    //current text filter to apply to the logData to produce the filteredLogs
     $scope.filterText = "";
     
+    //currently selected log
     $scope.selectedLog = null;
+
+    //The number of logs to add to the ng-repeat each time the infinite scoll function is called
+    $scope.infiniteScollSize = 30;
 
     $scope.query = "";
     $scope.propertyQuery = "AppInstanceID";
@@ -27,32 +38,32 @@ angular.module('app', [
     var parser = null;
     var parsedFilter = null;
 
-    $http.get('logs')
-        .then(function(results) {
+    ///set up the query language
+    $http.get('Src/query.pegjs')
+        .then(function (result) {
+            parser = PEG.buildParser(result.data);
+        })
+        .then(function () {
+            return $http.get('logs');
+        })
+        .then(function (results) {
             assert.isArray(results.data);
 
             $scope.logData = results.data;
-            $scope.selectedLog = $scope.logData[0];
+            $scope.selectedLog = $scope.logData[0]; 
+            applyFilter();
 
             var socket = socketFactory();
             socket.on('update', function (newLog) {
                 assert.isObject(newLog);
 
-                $scope.logData.splice(0, 0, newLog); 
+                $scope.logData.splice(0, 0, newLog);
             });
         })
         .catch(function(err) {
             $log.error(err);
         });
 
-    
-    ///set up the query language
-    $http.get('Src/query.pegjs')
-        .then(function (result) {
-            parser = PEG.buildParser(result.data);
-
-            applyFilter();
-        });
 
     ///
     ///Apply the current filter against the log data
@@ -60,12 +71,16 @@ angular.module('app', [
     var applyFilter = function () {
         var filterText = $scope.filterText.trim();
         if(!filterText) {
-            $scope.visibleLogs = $scope.logData;
-            return;
+            $scope.filteredLogs = $scope.logData;
+        } 
+        else {
+            parsedFilter = parser.parse(filterText);
+            $scope.filteredLogs = $scope.logData.filter(parsedFilter);
         }
-
-        parsedFilter = parser.parse(filterText);
-        $scope.visibleLogs = $scope.logData.filter(parsedFilter);
+        
+        $scope.visibleLogs = [];
+        $scope.selectedLog = null;
+        $scope.addMoreLogs();
     };
 
     ///
@@ -108,6 +123,19 @@ angular.module('app', [
         var propertyValue = element.Properties[$scope.propertyQuery].toLowerCase();
         return propertyValue.indexOf($scope.query.toLowerCase()) >= 0;
     };
+
+    ///
+    ///Infinite scroll function
+    ///
+    $scope.addMoreLogs = function () {
+        var index = $scope.visibleLogs.length;
+        var remaining = $scope.filteredLogs.length - index;
+        var numberOfNewItems = Math.min(remaining, $scope.infiniteScollSize);
+        var newItems = $scope.filteredLogs.slice(index, index + numberOfNewItems);
+        console.log(newItems);
+        $scope.visibleLogs = $scope.visibleLogs.concat(newItems);
+    }
+
 
     $scope.setPropertyQuery = function(property) {
         $scope.propertyQuery = property;
