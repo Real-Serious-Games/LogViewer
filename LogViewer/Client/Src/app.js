@@ -14,11 +14,18 @@ angular.module('app', [
 
     //running log of data received from the server
     $scope.logData = [];
+
+    $scope.visibleLogs = $scope.logData;
+
+    $scope.filterText = "";
     
     $scope.selectedLog = null;
 
     $scope.query = "";
     $scope.propertyQuery = "AppInstanceID";
+
+    var parser = null;
+    var parsedFilter = null;
 
     $http.get('logs')
         .then(function(results) {
@@ -39,6 +46,35 @@ angular.module('app', [
         });
 
     
+    ///set up the query language
+    $http.get('Src/query.pegjs')
+        .then(function (result) {
+            parser = PEG.buildParser(result.data);
+
+            applyFilter();
+        });
+
+    ///
+    ///Apply the current filter against the log data
+    ///
+    var applyFilter = function () {
+        var filterText = $scope.filterText.trim();
+        if(!filterText) {
+            $scope.visibleLogs = $scope.logData;
+            return;
+        }
+
+        parsedFilter = parser.parse(filterText);
+        $scope.visibleLogs = $scope.logData.filter(parsedFilter);
+    };
+
+    ///
+    ///Recognise a change in the filter
+    ///
+    $scope.filterChanged = function () {
+        applyFilter();
+    };
+
     $scope.clearLog = function () {
         $scope.logData = [];
         $scope.selectedLog = null;
