@@ -5,7 +5,7 @@
 //
 angular.module('app', [
     'btford.socket-io',
-    'infinite-scroll'
+    'app.directives'
 ])
 
 //
@@ -127,13 +127,15 @@ angular.module('app', [
     ///
     ///Infinite scroll function
     ///
-    $scope.addMoreLogs = function () {
+    $scope.addMoreLogs = function (deferredObj) {
         var index = $scope.visibleLogs.length;
         var remaining = $scope.filteredLogs.length - index;
         var numberOfNewItems = Math.min(remaining, $scope.infiniteScollSize);
         var newItems = $scope.filteredLogs.slice(index, index + numberOfNewItems);
-        console.log(newItems);
         $scope.visibleLogs = $scope.visibleLogs.concat(newItems);
+        if(deferredObj) {
+            deferredObj.resolve();
+        }
     }
 
 
