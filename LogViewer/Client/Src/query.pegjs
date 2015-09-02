@@ -17,10 +17,14 @@ Expr
 
 PropertyValue
   = StringValue
+  / NumberValue
 
 StringValue
   = '"' str:[^"]* '"' { return str.join(""); }
   / "'" str:[^"]* "'" { return str.join(""); }
+
+NumberValue
+  = num:[0-9]+ { return parseInt(num.join("")); }
 
 PropertyName
   = "$" id:Identifier { return id; }
