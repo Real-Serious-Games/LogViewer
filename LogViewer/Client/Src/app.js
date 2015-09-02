@@ -5,7 +5,8 @@
 //
 angular.module('app', [
     'btford.socket-io',
-    'app.directives'
+    'app.directives',
+    'angularMoment'
 ])
 
 //
@@ -50,13 +51,26 @@ angular.module('app', [
             assert.isArray(results.data);
 
             $scope.logData = results.data;
+            $scope.logData = Enumerable.from($scope.logData)
+                .select(function (row) {
+                    row.Timestamp = new moment(row.Timestamp);
+                    return row;
+                })
+                .toArray();
+
             $scope.selectedLog = $scope.logData[0]; 
             applyFilter();
 
             var socket = socketFactory();
             socket.on('update', function (newLog) {
                 assert.isObject(newLog);
-
+                newLog = Enumerable.from(newLog)
+                    .select(function (log) {
+                        log.Timestamp = new moment(log.Timestamp);
+                        return log;
+                    })
+                    .toArray();
+                    
                 $scope.logData.splice(0, 0, newLog);
             });
         })
