@@ -10,25 +10,26 @@ angular.module('app.directives', [])
 			offset = parseInt(attrs.offset, 10) || 10;
 			scrolling = false;
 			return angular.element($window).bind("scroll", function() {
-				var deferred, _ref;
-				_ref = element[0].offsetParent;
+				var deferred, offsetParent;
+				
+				offsetParent = element[0].offsetParent;
 				var offset;
-				if(_ref) {
-					offset = _ref.offsetTop;
+				if(offsetParent) {
+					offset = offsetParent.offsetTop;
 				}
 				else {
 					offset = 0;
 				}
 
-				var extraOffset = element[0].offsetHeight;
+				var offsetHeight = element[0].offsetHeight;
 
-				var offset = offset + extraOffset;
+				var offset = offset + offsetHeight;
 
 				var windowSize = $window.scrollY + $window.innerHeight;
 
-				var check = offset < windowSize;
+				var reachedBottom = offset < windowSize;
 
-				if(!scrolling && check) {
+				if(!scrolling && reachedBottom) {
 					scrolling = true;
 					deferred = $q.defer();
 					scope[attrs.infiniteScroll](deferred);
