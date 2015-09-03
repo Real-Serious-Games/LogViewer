@@ -100,8 +100,8 @@
                                 <td>
                                     <span class="label"
                                           ng-class="{
-                                    'label-danger': data.Level.toLowerCase() === 'error',
-                                    'label-info': data.Level.toLowerCase() === 'information',
+                                    'label-danger': data.Level.toLowerCase().includes('err'),
+                                    'label-info': data.Level.toLowerCase().includes('info'),
                                     'label-warning': data.Level.toLowerCase() === 'warning',
                                 }">
                                         {{data.Level}}
