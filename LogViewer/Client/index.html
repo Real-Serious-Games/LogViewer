@@ -23,6 +23,7 @@
     <script src="bower_components/socket.io-client/socket.io.js" type="text/javascript"></script>
     <script src="bower_components/pegjs/peg-0.9.0.js" type="text/javascript"></script>
     <script src="bower_components/moment/moment.js" type="text/javascript"></script>
+    <script src="bower_components/moment-timezone/moment-timezone.js" type="text/javascript"></script>
     <script src="bower_components/linqjs/linq.js" type="text/javascript"></script>
     <script src="bower_components/angular-moment/angular-moment.js" type="text/javascript"></script>
 
@@ -95,7 +96,7 @@
                                 ng-class="{
                                         'active': selectedLog === data,
                                     }">
-                                <td>{{data.Timestamp | amDateFormat: 'D/M/YYYY h:mma'}}</td>
+                                <td>{{data.Timestamp | amDateFormat: 'D-M-YYYY hh:mm'}}</td>
                                 <td>
                                     <span class="label"
                                           ng-class="{
@@ -122,7 +123,7 @@
                     <table class="table">
                         <tr>
                             <td>Timestamp</td>
-                            <td>{{selectedLog.Timestamp | amDateFormat: 'D/M/YYYY h:mma'}}</td>
+                            <td>{{selectedLog.Timestamp}}</td>
                         </tr>
                         <tr ng-repeat="(k,v) in selectedLog.Properties">
                             <td><div class="truncate">{{k}}</div></td>

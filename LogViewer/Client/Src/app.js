@@ -9,6 +9,10 @@ angular.module('app', [
     'angularMoment'
 ])
 
+.constant('angularMomentConfig', {
+    timezone: '+1000'
+})
+
 //
 // Application controller.
 //

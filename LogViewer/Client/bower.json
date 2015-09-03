@@ -24,6 +24,7 @@
     "angular-moment": "~0.10.2",
     "linqjs": "~3.0.5",
     "pegjs": "~0.9.0",
-    "moment": "~2.10.6"
+    "moment": "~2.10.6",
+    "moment-timezone": "~0.4.0"
   }
 }
