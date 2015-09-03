@@ -52,9 +52,8 @@ angular.module('app', [
 
             $scope.logData = results.data;
             $scope.logData = Enumerable.from($scope.logData)
-                .select(function (row) {
-                    row.Timestamp = new moment(row.Timestamp);
-                    return row;
+                .select(function (log) {
+                    return formatLog(log);
                 })
                 .toArray();
 
@@ -66,11 +65,10 @@ angular.module('app', [
                 assert.isObject(newLog);
                 newLog = Enumerable.from(newLog)
                     .select(function (log) {
-                        log.Timestamp = new moment(log.Timestamp);
-                        return log;
+                        return formatLog(log);
                     })
                     .toArray();
-                    
+
                 $scope.logData.splice(0, 0, newLog);
             });
         })
@@ -78,6 +76,17 @@ angular.module('app', [
             $log.error(err);
         });
 
+    var formatLog = function (log) {
+
+        //some logs seem not to have a timestamp on them 
+        if(!log.Timestamp) {
+            return;
+        }
+
+        log.Timestamp = moment(log.Timestamp);
+        log.Properties.Timestamp = log.Timestamp;
+        return log;
+    };
 
     ///
     ///Apply the current filter against the log data
