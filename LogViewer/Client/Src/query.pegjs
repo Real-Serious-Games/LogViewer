@@ -60,8 +60,6 @@ NumberValue
 DateValue
     = 'Date(' str:[^)]* ')' { 
         var dateStr = str.join("");
-        console.log(moment(dateStr).toISOString()); //fio
-        console.log(moment(dateStr).format("Z")); //fio
         var d = moment(dateStr); 
         if (!d.isValid()) {
             throw new Error("Invalid date: " + dateStr);
