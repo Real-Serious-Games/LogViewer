@@ -19,14 +19,14 @@ angular.module('app', [
 .controller('AppCtrl', function AppCtrl($scope, $http, $log, socketFactory) {
 
     //running log of data received from the server
-    $scope.logData = [];
+    var logData = [];
 
     //a subset of logData with the current filterText applied to it
-    $scope.filteredLogs = $scope.logData;
+    var filteredLogs = logData;
 
     //the currently truncated subsection of filteredLogs that we are rendering, using an infinite scroll to 
     //append more filtered logs when needed
-    $scope.visibleLogs = $scope.logData;
+    $scope.visibleLogs = logData;
 
     //current text filter to apply to the logData to produce the filteredLogs
     $scope.filterText = "";
@@ -54,26 +54,20 @@ angular.module('app', [
         .then(function (results) {
             assert.isArray(results.data);
 
-            $scope.logData = results.data;
-            $scope.logData = Enumerable.from($scope.logData)
-                .select(function (log) {
-                    return formatLog(log);
-                })
+            logData = results.data;
+            logData = Enumerable.from(logData)
+                .select(formatLog)
                 .toArray();
 
-            $scope.selectedLog = $scope.logData[0]; 
+            $scope.selectedLog = logData[0]; 
             applyFilter();
 
             var socket = socketFactory();
             socket.on('update', function (newLog) {
                 assert.isObject(newLog);
-                newLog = Enumerable.from(newLog)
-                    .select(function (log) {
-                        return formatLog(log);
-                    })
-                    .toArray();
 
-                $scope.logData.splice(0, 0, newLog);
+                logData.splice(0, 0, formatLog(newLog));
+                applyFilter();
             });
         })
         .catch(function(err) {
@@ -84,7 +78,7 @@ angular.module('app', [
 
         //some logs seem not to have a timestamp on them 
         if(!log.Timestamp) {
-            return;
+            return log;
         }
 
         log.Timestamp = moment(log.Timestamp);
@@ -98,15 +92,14 @@ angular.module('app', [
     var applyFilter = function () {
         var filterText = $scope.filterText.trim();
         if(!filterText) {
-            $scope.filteredLogs = $scope.logData;
+            filteredLogs = logData;
         } 
         else {
             parsedFilter = parser.parse(filterText);
-            $scope.filteredLogs = $scope.logData.filter(parsedFilter);
+            filteredLogs = logData.filter(parsedFilter);
         }
         
         $scope.visibleLogs = [];
-        $scope.selectedLog = null;
         $scope.addMoreLogs();
     };
 
@@ -118,7 +111,7 @@ angular.module('app', [
     };
 
     $scope.clearLog = function () {
-        $scope.logData = [];
+        logData = [];
         $scope.selectedLog = null;
     }
 
@@ -156,9 +149,9 @@ angular.module('app', [
     ///
     $scope.addMoreLogs = function (deferredObj) {
         var index = $scope.visibleLogs.length;
-        var remaining = $scope.filteredLogs.length - index;
+        var remaining = filteredLogs.length - index;
         var numberOfNewItems = Math.min(remaining, $scope.infiniteScollSize);
-        var newItems = $scope.filteredLogs.slice(index, index + numberOfNewItems);
+        var newItems = filteredLogs.slice(index, index + numberOfNewItems);
         $scope.visibleLogs = $scope.visibleLogs.concat(newItems);
         if(deferredObj) {
             deferredObj.resolve();
