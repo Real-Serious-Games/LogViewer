@@ -1,8 +1,8 @@
 Expr
     = name:PropertyName WS "==" WS value:PropertyValue {
         return function (log) {
-                if (moment.isMoment(value)) {
-                    return value.isSame(log.Properties[name]);
+                if (value.startDate && value.endDate) {
+                    return moment.range(value.startDate, value.endDate).contains(moment(log.Properties[name]), false); //false indicates not to exclude the end date when testing inclusion
                 }
                 else {
                     return log.Properties[name] === value;
@@ -11,8 +11,8 @@ Expr
     }
     / name:PropertyName WS "!=" WS value:PropertyValue {
         return function (log) {
-                if (moment.isMoment(value)) {
-                    return !value.isSame(log.Properties[name]);
+                if (value.startDate && value.endDate) {
+                    return !moment.range(value.startDate, value.endDate).contains(moment(log.Properties[name]), false);
                 }
                 else {
                     return log.Properties[name] !== value;
@@ -21,8 +21,8 @@ Expr
     }
     / name:PropertyName WS ">" WS value:PropertyValue {
         return function (log) {
-            if (moment.isMoment(value)) {
-                return value.isBefore(log.Properties[name]);
+            if (value.startDate && value.endDate) {
+                return value.endDate.isBefore(log.Properties[name]);
             }
             else {
                 return false;
@@ -31,8 +31,8 @@ Expr
     }
     /name:PropertyName WS "<" WS value:PropertyValue {
         return function (log) {
-            if (moment.isMoment(value)) {
-                return value.isAfter(log.Properties[name]);
+            if (value.startDate && value.endDate) {
+                return value.startDate.isAfter(log.Properties[name]);
             }
             else {
                 return false;
@@ -60,11 +60,37 @@ NumberValue
 DateValue
     = 'Date(' str:[^)]* ')' { 
         var dateStr = str.join("");
-        var d = moment(dateStr); 
-        if (!d.isValid()) {
+
+        var stringArray = dateStr.split(/[\/-]+/);
+        var substringCount = stringArray.length;
+        var timeUnits;
+
+        switch(substringCount) {
+            case 1:
+                timeUnits = "year";
+                break;
+            case 2:
+                timeUnits = "month";
+                break;
+            case 3:
+                timeUnits = "day";
+                break;
+            case 4:
+                timeUnits = "minute"
+                break;
+            default:
+                timeUnits = "second"
+        }
+        var startMoment = moment(dateStr).startOf(timeUnits);
+        var endMoment = moment(dateStr).endOf(timeUnits);
+
+        var dates = { startDate: startMoment, endDate: endMoment };
+        
+        if(!dates.startDate.isValid() || !dates.endDate.isValid()) {
             throw new Error("Invalid date: " + dateStr);
         }
-        return d;
+
+        return dates;
     }
 
 PropertyName
