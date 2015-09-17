@@ -46,7 +46,8 @@ Expr
     }
 
 PropertyValue
-    = DateValue
+    = DateRangeValue
+    / DateValue
     / StringValue
     / NumberValue
 
@@ -92,6 +93,31 @@ DateValue
 
         return dates;
     }
+
+DateRangeValue
+    = 'Date(' date1:[^,]* ',' date2:[^)]* ')' {
+    var dateStrOne = date1.join("");
+    var dateStrTwo = date2.join("");
+
+    var startMoment = moment(dateStrOne);
+    var endMoment = moment(dateStrTwo);
+
+    if (!startMoment.isValid()) {
+        throw new Error("Invalid date: " + dateStrOne);
+    }
+
+    if(!endMoment.isValid()) {
+        throw new Error("Invalid date: " + dateStrTwo);
+    } 
+
+    if (startMoment > endMoment) {
+        var temp = startMoment;
+        startMoment = endMoment;
+        endMoment = temp;
+    }
+
+    return { startDate: startMoment, endDate: endMoment };
+}
 
 PropertyName
     = "$" id:Identifier { return id; }
