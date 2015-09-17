@@ -1,5 +1,6 @@
-Expr
-    = name:PropertyName WS "==" WS value:PropertyValue {
+EqualityExpr
+    = RelationalExpr
+    / name:PropertyName WS "==" WS value:PropertyValue {
         return function (log) {
                 if (value.startDate && value.endDate) {
                     return moment.range(value.startDate, value.endDate).contains(moment(log.Properties[name]), false); //false indicates not to exclude the end date when testing inclusion
@@ -19,7 +20,9 @@ Expr
                 }
         };
     }
-    / name:PropertyName WS ">" WS value:PropertyValue {
+
+RelationalExpr
+    = name:PropertyName WS ">" WS value:PropertyValue {
         return function (log) {
             if (value.startDate && value.endDate) {
                 return value.endDate.isBefore(log.Properties[name]);
@@ -29,7 +32,7 @@ Expr
             }
         };
     }
-    /name:PropertyName WS "<" WS value:PropertyValue {
+    / name:PropertyName WS "<" WS value:PropertyValue {
         return function (log) {
             if (value.startDate && value.endDate) {
                 return value.startDate.isAfter(log.Properties[name]);
