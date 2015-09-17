@@ -39,11 +39,6 @@ Expr
             }
         };
     }
-    / text:.* { 
-        return function (log) {
-            return JSON.stringify(log).indexOf(text.join("")) !== -1;
-        };
-    }
 
 PropertyValue
     = DateRangeValue
