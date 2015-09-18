@@ -1,3 +1,16 @@
+LogicExpr
+    = firstExpr:EqualityExpr WS "&&" WS secondExpr:EqualityExpr {
+        return function (log) {
+            return firstExpr(log) && secondExpr(log);
+        };
+    }
+    / firstExpr:EqualityExpr WS "||" WS secondExpr:EqualityExpr {
+        return function (log) {
+            return firstExpr(log) || secondExpr(log);
+        };
+    }
+    / EqualityExpr
+
 EqualityExpr
     = RelationalExpr
     / name:PropertyName WS "==" WS value:PropertyValue {
