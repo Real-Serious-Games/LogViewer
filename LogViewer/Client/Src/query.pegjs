@@ -12,48 +12,73 @@ LogicExpr
     / EqualityExpr
 
 EqualityExpr
-    = RelationalExpr
-    / name:PropertyName WS "==" WS value:PropertyValue {
+    = lhs:RelationalExpr WS "==" WS rhs:RelationalExpr {
         return function (log) {
-                if (value.startDate && value.endDate) {
-                    return moment.range(value.startDate, value.endDate).contains(moment(log.Properties[name]), false); //false indicates not to exclude the end date when testing inclusion
+                if (rhs(log) && rhs(log).startDate && rhs(log).endDate) {
+                    return moment.range(rhs(log).startDate, rhs(log).endDate).contains(moment(lhs(log)), false); //false indicates not to exclude the end date when testing inclusion
+                }
+                else if (lhs(log) && lhs(log).startDate && lhs(log).endDate) {
+                    return moment.range(lhs(log).startDate, lhs(log).endDate).contains(moment(rhs(log)), false); //false indicates not to exclude the end date when testing inclusion
                 }
                 else {
-                    return log.Properties[name] === value;
+                    return lhs(log) === rhs(log);
                 }
         };
     }
-    / name:PropertyName WS "!=" WS value:PropertyValue {
+    / lhs:RelationalExpr WS "!=" WS rhs:RelationalExpr {
         return function (log) {
-                if (value.startDate && value.endDate) {
-                    return !moment.range(value.startDate, value.endDate).contains(moment(log.Properties[name]), false);
+                if (rhs(log) && rhs(log).startDate && rhs(log).endDate) {
+                    return !moment.range(rhs(log).startDate, rhs(log).endDate).contains(moment(lhs(log)), false); //false indicates not to exclude the end date when testing inclusion
+                }
+                else if (lhs(log) && lhs(log).startDate && lhs(log).endDate) {
+                    return !moment.range(lhs(log).startDate, lhs(log).endDate).contains(moment(rhs(log)), false); //false indicates not to exclude the end date when testing inclusion
                 }
                 else {
-                    return log.Properties[name] !== value;
+                    return lhs(log) !== rhs(log);
                 }
         };
-    }
+    }    
+    / RelationalExpr
 
 RelationalExpr
-    = name:PropertyName WS ">" WS value:PropertyValue {
+    = lhs:Primary WS ">" WS rhs:Primary {
         return function (log) {
-            if (value.startDate && value.endDate) {
-                return value.endDate.isBefore(log.Properties[name]);
+            if (rhs(log) && rhs(log).startDate && rhs(log).endDate) {
+                return rhs(log).endDate.isBefore(lhs(log));
+            }
+            else if (lhs(log) && lhs(log).startDate && lhs(log).endDate) {
+                return lhs(log).endDate.isBefore(rhs(log));
             }
             else {
                 return false;
             }
         };
     }
-    / name:PropertyName WS "<" WS value:PropertyValue {
+    / lhs:Primary WS "<" WS rhs:Primary {
         return function (log) {
-            if (value.startDate && value.endDate) {
-                return value.startDate.isAfter(log.Properties[name]);
+            if (rhs(log) && rhs(log).startDate && rhs(log).endDate) {
+                return rhs(log).startDate.isAfter(lhs(log));
+            }
+            else if (lhs(log) && lhs(log).startDate && lhs(log).endDate) {
+                return lhs(log).startDate.isAfter(rhs(log));
             }
             else {
                 return false;
             }
         };
+    }
+    / Primary
+
+Primary
+    = name:PropertyName { 
+        return function (log) {
+            return log.Properties[name]; 
+        } 
+    }
+    / value:PropertyValue { 
+        return function (log) { 
+            return value; 
+        }
     }
 
 PropertyValue
