@@ -41,7 +41,7 @@ EqualityExpr
     / RelationalExpr
 
 RelationalExpr
-    = lhs:Primary WS ">" WS rhs:Primary {
+    = lhs:Unary WS ">" WS rhs:Unary {
         return function (log) {
             if (rhs(log) && rhs(log).startDate && rhs(log).endDate) {
                 return rhs(log).endDate.isBefore(lhs(log));
@@ -54,7 +54,7 @@ RelationalExpr
             }
         };
     }
-    / lhs:Primary WS "<" WS rhs:Primary {
+    / lhs:Unary WS "<" WS rhs:Unary {
         return function (log) {
             if (rhs(log) && rhs(log).startDate && rhs(log).endDate) {
                 return rhs(log).startDate.isAfter(lhs(log));
@@ -65,6 +65,14 @@ RelationalExpr
             else {
                 return false;
             }
+        };
+    }
+    / Unary
+
+Unary
+    = "!" prim:Primary {
+        return function (log) {
+            return !prim(log); 
         };
     }
     / Primary
