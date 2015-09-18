@@ -37,6 +37,8 @@ angular.module('app', [
     //The number of logs to add to the ng-repeat each time the infinite scoll function is called
     $scope.infiniteScollSize = 30;
 
+    $scope.filteredLogCount;
+
     $scope.query = "";
     $scope.propertyQuery = "AppInstanceID";
 
@@ -98,7 +100,7 @@ angular.module('app', [
             parsedFilter = parser.parse(filterText);
             filteredLogs = logData.filter(parsedFilter);
         }
-        
+        $scope.filteredLogCount = filteredLogs.length;
         $scope.visibleLogs = [];
         $scope.addMoreLogs();
     };
