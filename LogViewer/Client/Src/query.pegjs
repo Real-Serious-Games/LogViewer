@@ -1,10 +1,10 @@
 LogicExpr
-    = firstExpr:EqualityExpr WS "&&" WS secondExpr:LogicExpr {
+    = firstExpr:EqualityExpr MWS "&&" MWS secondExpr:LogicExpr {
         return function (log) {
             return firstExpr(log) && secondExpr(log);
         };
     }
-    / firstExpr:EqualityExpr WS "||" WS secondExpr:LogicExpr {
+    / firstExpr:EqualityExpr MWS "||" MWS secondExpr:LogicExpr {
         return function (log) {
             return firstExpr(log) || secondExpr(log);
         };
@@ -12,7 +12,7 @@ LogicExpr
     / EqualityExpr
 
 EqualityExpr
-    = lhs:RelationalExpr WS "==" WS rhs:RelationalExpr {
+    = lhs:RelationalExpr MWS "==" MWS rhs:RelationalExpr {
         return function (log) {
                 if (rhs(log) && rhs(log).startDate && rhs(log).endDate) {
                     return moment.range(rhs(log).startDate, rhs(log).endDate).contains(moment(lhs(log)), false); //false indicates not to exclude the end date when testing inclusion
@@ -25,7 +25,7 @@ EqualityExpr
                 }
         };
     }
-    / lhs:RelationalExpr WS "!=" WS rhs:RelationalExpr {
+    / lhs:RelationalExpr MWS "!=" MWS rhs:RelationalExpr {
         return function (log) {
                 if (rhs(log) && rhs(log).startDate && rhs(log).endDate) {
                     return !moment.range(rhs(log).startDate, rhs(log).endDate).contains(moment(lhs(log)), false); //false indicates not to exclude the end date when testing inclusion
@@ -41,7 +41,7 @@ EqualityExpr
     / RelationalExpr
 
 RelationalExpr
-    = lhs:Unary WS ">" WS rhs:Unary {
+    = lhs:Unary MWS ">" MWS rhs:Unary {
         return function (log) {
             if (rhs(log) && rhs(log).startDate && rhs(log).endDate) {
                 return rhs(log).endDate.isBefore(lhs(log));
@@ -54,7 +54,7 @@ RelationalExpr
             }
         };
     }
-    / lhs:Unary WS "<" WS rhs:Unary {
+    / lhs:Unary MWS "<" MWS rhs:Unary {
         return function (log) {
             if (rhs(log) && rhs(log).startDate && rhs(log).endDate) {
                 return rhs(log).startDate.isAfter(lhs(log));
@@ -70,7 +70,7 @@ RelationalExpr
     / Unary
 
 Unary
-    = "!" prim:Primary {
+    = "!" MWS prim:Primary {
         return function (log) {
             return !prim(log); 
         };
@@ -78,7 +78,7 @@ Unary
     / Primary
 
 Primary
-    = "(" expr:LogicExpr ")" { return expr; }
+    = "(" MWS expr:LogicExpr MWS ")" { return expr; }
     / name:PropertyName { 
         return function (log) {
             return log.Properties[name]; 
@@ -186,4 +186,6 @@ WS
     = "\t"
     / " "
 
+MWS
+    = WS*
 
