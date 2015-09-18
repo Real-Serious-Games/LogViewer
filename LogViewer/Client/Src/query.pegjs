@@ -78,7 +78,8 @@ Unary
     / Primary
 
 Primary
-    = name:PropertyName { 
+    = "(" expr:LogicExpr ")" { return expr; }
+    / name:PropertyName { 
         return function (log) {
             return log.Properties[name]; 
         } 
