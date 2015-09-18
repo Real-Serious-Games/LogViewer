@@ -165,7 +165,7 @@ DateRangeValue
 }
 
 PropertyName
-    = "$" id:Identifier { return id; }
+    = id:Identifier { return id; }
 
 Identifier
     = first:IdentifierStart rest:IdentifierPart* {
