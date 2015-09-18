@@ -41,34 +41,20 @@
             <h3 class="flex-fill">RSG LogViewer</h3>
         -->
             <h3 class="header">RSG LogViewer</h3>
-            <div class="vertical-center-child">
+            <div 
+                class="vertical-center-child"
+                ng-class="{
+                    'has-success': isValidQuery,
+                    'has-error': !isValidQuery,
+                }">
+                <br/>
                 <button class="clearLogBtn" id="dLabel" type="button" ng-click="clearLog()">Clear Log</button>
-                <input style="Width: 50%" ng-model="filterText" type="text" placeholder="Filter on:" ng-change="filterChanged()" autofocus>
-                <!--
-                <div class="dropdown">
-                    <button 
-                        class="btn btn-default dropdown-toggle" 
-                        type="button" 
-                        id="dropdownPropertySelector" 
-                        data-toggle="dropdown" 
-                        aria-haspopup="true" 
-                        aria-expand="true"
-                    >
-                            Filter Property
-                            <span class="carat"></span>
-                    </button>
-                    <ul class="dropdown-menu" aria-laeblledby="dropdownPropertySelector">
-                        <li><a href="#" ng-click="setPropertyQuery('UserName')">Username</a></li>
-                        <li><a href="#" ng-click="setPropertyQuery('AppInstanceID')">App Instance</a></li>
-                        <li><a href="#" ng-click="setPropertyQuery('MachineName')">Machine Name</a></li>
-                    </ul>
-                </div>
-                -->
+                <input style="Width: 50%" ng-model="filterText" type="text" placeholder="Enter query" ng-change="filterChanged()" class="form-control" autofocus>
             </div>
             <div>
+                <br/>
                 <label>Total logs after filter: {{filteredLogCount}}</label>
             </div>
-
         </div>
         <div class="content row-layout">
             <div class="log-list">

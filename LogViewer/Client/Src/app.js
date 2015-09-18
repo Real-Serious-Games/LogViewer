@@ -37,6 +37,8 @@ angular.module('app', [
     //The number of logs to add to the ng-repeat each time the infinite scoll function is called
     $scope.infiniteScollSize = 30;
 
+    $scope.isValidQuery = true;
+
     $scope.filteredLogCount;
 
     $scope.query = "";
@@ -97,8 +99,14 @@ angular.module('app', [
             filteredLogs = logData;
         } 
         else {
-            parsedFilter = parser.parse(filterText);
-            filteredLogs = logData.filter(parsedFilter);
+            try {
+                parsedFilter = parser.parse(filterText);
+                filteredLogs = logData.filter(parsedFilter);
+                $scope.isValidQuery = true;
+            }
+            catch (e) {
+                $scope.isValidQuery = false;
+            }   
         }
         $scope.filteredLogCount = filteredLogs.length;
         $scope.visibleLogs = [];
