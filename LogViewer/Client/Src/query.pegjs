@@ -1,10 +1,10 @@
 LogicExpr
-    = firstExpr:EqualityExpr WS "&&" WS secondExpr:EqualityExpr {
+    = firstExpr:EqualityExpr WS "&&" WS secondExpr:LogicExpr {
         return function (log) {
             return firstExpr(log) && secondExpr(log);
         };
     }
-    / firstExpr:EqualityExpr WS "||" WS secondExpr:EqualityExpr {
+    / firstExpr:EqualityExpr WS "||" WS secondExpr:LogicExpr {
         return function (log) {
             return firstExpr(log) || secondExpr(log);
         };
