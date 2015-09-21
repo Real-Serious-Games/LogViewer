@@ -79,15 +79,15 @@ Unary
 
 Primary
     = "(" MWS expr:LogicExpr MWS ")" { return expr; }
-    / name:PropertyName { 
-        return function (log) {
-            return log.Properties[name]; 
-        } 
-    }
     / value:PropertyValue { 
         return function (log) { 
             return value; 
         }
+    }
+    / name:PropertyName { 
+        return function (log) {
+            return log.Properties[name]; 
+        } 
     }
 
 PropertyValue
