@@ -105,6 +105,7 @@ angular.module('app', [
                 $scope.isValidQuery = true;
             }
             catch (e) {
+                console.log(e.message);
                 $scope.isValidQuery = false;
             }   
         }
