@@ -4,7 +4,7 @@ var socketio = require('socket.io');
 var bodyParser = require('body-parser');
 var pmongo = require('promised-mongo');
 var path = require('path');
-var clientManager = require('./ConnectionManager.js');
+var clientManager = new require('./clientManager.js')();
 var config = require('./config.js');
 
 var db = pmongo(config.host + '/' + config.database);
@@ -31,7 +31,7 @@ var server = app.listen(process.env.PORT || config.port, function() {
     var logsCursor = logsCollection.find({}, {}, { tailable: true, timeout: false });
 
     logsCursor.on('data', function(doc) {        
-        clientManager.clients
+        clientManager.getClients()
             .forEach(function(client) {
                 client.emit('update', doc);
             });
