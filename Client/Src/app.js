@@ -22,13 +22,15 @@ angular.module('app', [
     var logData = [];
 
     //a subset of logData with the current filterText applied to it
-    var filteredLogs = logData;
+    var queryFilteredLogs = logData;
+    var textFilteredLogs = queryFilteredLogs;
 
     //the currently truncated subsection of filteredLogs that we are rendering, using an infinite scroll to 
     //append more filtered logs when needed
     $scope.visibleLogs = logData;
 
     //current text filter to apply to the logData to produce the filteredLogs
+    $scope.queryText = "";
     $scope.filterText = "";
     
     //currently selected log
@@ -39,13 +41,12 @@ angular.module('app', [
 
     $scope.isValidQuery = true;
 
-    $scope.filteredLogCount;
+    $scope.filteredLogCount = 0;
 
     $scope.query = "";
     $scope.propertyQuery = "AppInstanceID";
 
     var parser = null;
-    var parsedFilter = null;
 
     ///set up the query language
     $http.get('Src/query.pegjs')
@@ -64,14 +65,16 @@ angular.module('app', [
                 .toArray();
 
             $scope.selectedLog = logData[0]; 
-            applyFilter();
+            applyQueryFilter();
+            applyTextFilter();
 
             var socket = socketFactory();
             socket.on('update', function (newLog) {
                 assert.isObject(newLog);
 
                 logData.splice(0, 0, formatLog(newLog));
-                applyFilter();
+                applyQueryFilter();
+                applyTextFilter();
             });
         })
         .catch(function(err) {
@@ -90,26 +93,41 @@ angular.module('app', [
         return log;
     };
 
-    ///
-    ///Apply the current filter against the log data
-    ///
-    var applyFilter = function () {
-        var filterText = $scope.filterText.trim();
-        if(!filterText) {
-            filteredLogs = logData;
+    //
+    // Apply the query filter.
+    //
+    var applyQueryFilter = function () {
+        var queryText = $scope.queryText.trim();
+        if (!queryText) {
+            queryFilteredLogs = logData;
         } 
         else {
             try {
-                parsedFilter = parser.parse(filterText);
-                filteredLogs = logData.filter(parsedFilter);
+                var parsedFilter = parser.parse(queryText);
+                queryFilteredLogs = logData.filter(parsedFilter);
                 $scope.isValidQuery = true;
             }
             catch (e) {
-                console.log(e.message);
+                console.error(e.message);
                 $scope.isValidQuery = false;
             }   
         }
-        $scope.filteredLogCount = filteredLogs.length;
+    };
+
+    //
+    // Apply the text filter.
+    //
+    var applyTextFilter = function () {
+        var filterText = $scope.filterText.trim().toLowerCase();        
+        if (!filterText) {
+            textFilteredLogs = queryFilteredLogs;
+        } 
+        else {
+            textFilteredLogs = queryFilteredLogs.filter(function (log) {
+                    return JSON.stringify(log).indexOf(filterText) !==  -1;
+                });
+        }
+        $scope.filteredLogCount = textFilteredLogs.length;
         $scope.visibleLogs = [];
         $scope.addMoreLogs();
     };
@@ -117,12 +135,21 @@ angular.module('app', [
     ///
     ///Recognise a change in the filter
     ///
+    $scope.queryChanged = function () {
+        applyQueryFilter();
+        applyTextFilter();
+    };
+
     $scope.filterChanged = function () {
-        applyFilter();
+        applyTextFilter();
     };
 
     $scope.clearLog = function () {
         logData = [];
+        queryFilteredLogs = [];
+        textFilteredLogs = [];
+        $scope.visibleLogs = [];
+        $scope.filteredLogCount = 0;
         $scope.selectedLog = null;
     }
 
@@ -160,17 +187,12 @@ angular.module('app', [
     ///
     $scope.addMoreLogs = function (deferredObj) {
         var index = $scope.visibleLogs.length;
-        var remaining = filteredLogs.length - index;
+        var remaining = textFilteredLogs.length - index;
         var numberOfNewItems = Math.min(remaining, $scope.infiniteScollSize);
-        var newItems = filteredLogs.slice(index, index + numberOfNewItems);
+        var newItems = textFilteredLogs.slice(index, index + numberOfNewItems);
         $scope.visibleLogs = $scope.visibleLogs.concat(newItems);
         if(deferredObj) {
             deferredObj.resolve();
         }
     }
-
-
-    $scope.setPropertyQuery = function(property) {
-        $scope.propertyQuery = property;
-    };
 });

@@ -3,7 +3,6 @@
 }
 
 .header {
-	display: block;
     margin-left: 15px;
 }
 
@@ -19,7 +18,8 @@
 }
 
 .log-details-panel {
-    margin: 1em;
+    margin-top: 5em;
+    margin-right: 1em;
 }
 
 .log-list {

@@ -17,15 +17,17 @@ app.use(
     express.static(path.join(__dirname, '../../Client'))
 );
 
+console.log('Booting server...');
+
 //St up the server, hook up to the database and preload the data that is currently in there
 var server = app.listen(process.env.PORT || config.port, function() {
 
-    console.log('establishing connection with the database');
+    console.log('Establishing connection with the database...');
     //set up tailable cursors for each
 
 
     logsCollection.find().toArray().then(function() { 
-        console.log('database connection established');
+        console.log('Database connection established.');
     });
 
     var logsCursor = logsCollection.find({}, {}, { tailable: true, timeout: false });
@@ -40,10 +42,15 @@ var server = app.listen(process.env.PORT || config.port, function() {
 
 //client call for data
 app.get('/' + config.secret + '/logs', function(req, res) {
+
+    console.log("Retreiving existing logs for client...");
+
     logsCollection
         .find()
         .toArray()
         .then(function(logs) {            
+            console.log("Found " + logs.length + " existing logs.");
+
             res.json(logs.reverse());
         });
 });
@@ -55,6 +62,7 @@ var data = [];
 /// When the socket receives a connection
 ///
 io.sockets.on('connection', function (client) {
+
     //add client to client manager
     clientManager.addClient(client);
         
