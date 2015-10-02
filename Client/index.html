@@ -1,0 +1,133 @@
+﻿<html>
+<head>
+    <title>LogViewer</title>
+    <!-- Styling -->
+    <link rel="stylesheet" type="text/css" href="Src/base.css" />
+    <link rel="stylesheet" type="text/css" href="Src/app.css" />
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+    <!-- Optional theme -->
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">-->
+    
+</head>
+<body ng-app="app" ng-controller="AppCtrl">
+    <!-- Library code. -->
+    <script src="bower_components/chai/chai.js" type="text/javascript"></script>
+    <script>
+        var assert = chai.assert;
+    </script>
+    <script src="bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
+    <script src="bower_components/angular/angular.js" type="text/javascript"></script>
+    <script src="bower_components/angular-socket-io/socket.js" type="text/javascript"></script>
+    <script src="bower_components/socket.io-client/socket.io.js" type="text/javascript"></script>
+    <script src="bower_components/pegjs/peg-0.9.0.js" type="text/javascript"></script>
+    <script src="bower_components/moment/moment.js" type="text/javascript"></script>
+    <script src="bower_components/moment-timezone/moment-timezone.js" type="text/javascript"></script>
+    <script src="bower_components/linqjs/linq.js" type="text/javascript"></script>
+    <script src="bower_components/angular-moment/angular-moment.js" type="text/javascript"></script>
+    <script src="bower_components/moment-range/dist/moment-range.js" type="text/javascript"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+
+    <!-- App code. -->
+    <script src="Src/directives.js" type="text/javascript"></script>
+    <script src="Src/app.js" type="text/javascript"></script>
+
+    <div>
+        <div class="header row-layout">
+        <!--
+            <h3 class="flex-fill">RSG LogViewer</h3>
+        -->
+            <h3 class="header">RSG LogViewer</h3>
+            <div 
+                class="vertical-center-child"
+                ng-class="{
+                    'has-success': isValidQuery,
+                    'has-error': !isValidQuery,
+                }">
+                <br/>
+                <button class="clearLogBtn" id="dLabel" type="button" ng-click="clearLog()">Clear Log</button>
+                <input style="Width: 50%" ng-model="filterText" type="text" placeholder="Enter query" ng-change="filterChanged()" class="form-control" autofocus>
+            </div>
+            <div>
+                <br/>
+                <label>Total logs after filter: {{filteredLogCount}}</label>
+            </div>
+        </div>
+        <div class="content row-layout">
+            <div class="log-list">
+                <div class="log-panel panel panel-default">
+                    <div class="panel-heading">
+                        Recent Log Messages
+                    </div>
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Timestamp
+                                </th>
+                                <th>
+                                    Level
+                                </th>
+                                <th>
+                                    Message
+                                </th>
+                                <th>
+                                    User
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody  infinite-scroll="addMoreLogs">
+                            <tr ng-repeat="data in visibleLogs"
+                                class=""
+                                ng-click="selectLog(data)"
+                                ng-class="{
+                                        'active': selectedLog === data,
+                                    }">
+                                <td>{{data.Timestamp | amDateFormat: 'D-M-YYYY hh:mm'}}</td>
+                                <td>
+                                    <span class="label"
+                                          ng-class="{
+                                    'label-danger': data.Level.toLowerCase().includes('err'),
+                                    'label-info': data.Level.toLowerCase().includes('info'),
+                                    'label-warning': data.Level.toLowerCase() === 'warning',
+                                }">
+                                        {{data.Level}}
+                                    </span>
+                                </td>
+                                <td class="log-message">{{truncate(data.RenderedMessage)}}</td>
+                                <td>{{data.Properties.UserName}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="log-detail">
+                <div class="log-details-panel panel panel-default">
+                    <div class="panel-heading">
+                        Selected Log Entry
+                    </div>
+                    <table class="table">
+                        <tr>
+                            <td>Timestamp</td>
+                            <td>{{selectedLog.Timestamp}}</td>
+                        </tr>
+                        <tr ng-repeat="(k,v) in selectedLog.Properties">
+                            <td><div class="truncate">{{k}}</div></td>
+                            <td><div class="truncate">{{v}}</div></td>
+                        </tr>
+                        <tr>
+                            <td>Message</td>
+                            <td><div class="truncate">{{selectedLog.RenderedMessage}}</div></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
