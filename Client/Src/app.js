@@ -99,6 +99,7 @@ angular.module('app', [
     var applyQueryFilter = function () {
         var queryText = $scope.queryText.trim();
         if (!queryText) {
+            $scope.isValidQuery = true;
             queryFilteredLogs = logData;
         } 
         else {
