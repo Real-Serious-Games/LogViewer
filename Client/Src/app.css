@@ -1,0 +1,41 @@
+﻿body {
+
+}
+
+.header {
+    margin-left: 15px;
+}
+
+.log-detail {
+    width: 650px;
+    position: fixed;
+    top: 0;
+    right: 0;
+}
+
+.log-panel {
+    margin: 1em;
+}
+
+.log-details-panel {
+    margin-top: 5em;
+    margin-right: 1em;
+}
+
+.log-list {
+	justify-content: flex-start;
+}
+
+.truncate {
+  text-overflow: ellipsis;
+}
+
+.clearLogBtn {
+    width: 100px;
+    height: 40px;
+    margin-right: 15px;
+}
+
+.dropdown {
+	padding-left: 10px;
+}

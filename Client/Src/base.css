@@ -1,0 +1,92 @@
+
+.border {
+	border: solid black 1px !important;
+}
+
+.border-green {
+	border: solid green 1px !important;
+}
+
+.border-red {
+	border: solid red 1px !important;
+}
+
+.border-blue {
+	border: solid blue 1px !important;
+}
+
+.background-red {
+	background: red !important;
+}
+
+.background-gray {
+	background: #ccc !important;
+}
+
+.vis-hidden {
+	visibility: hidden;
+}
+
+/* 
+ * Layout
+ */
+
+.vertical-center-a {
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+.vertical-center-b {
+  	vertical-align: middle;
+}
+
+.vertical-center-child {
+	display: flex;
+	align-items: center;
+}
+
+.horizontal-center-a {
+	text-align: center;
+}
+
+.horizontal-center-b {
+	margin: 0 auto;
+}
+
+.horizontal-center-child {
+	display: flex;
+	justify-content: center;
+}
+
+.col-layout {
+	display: flex;
+	flex-direction: column;
+}
+
+.row-layout {
+	display: flex;
+	flex-direction: row;
+}
+
+/* 
+ * Wrap around to next line when row/col is full.
+ */
+.flex-wrap {
+	flex-wrap: wrap;
+ }
+
+/*
+ * Fill a flex container.
+ */
+.flex-fill {
+	flex-grow: 1;
+}
+
+.full-height {
+	height: 100% !important;
+}
+
+.full-width {
+	width: 100% !important;
+}
+
