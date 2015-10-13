@@ -71,10 +71,8 @@ angular.module('app', [
             var socket = socketFactory();
             socket.on('update', function (newLog) {
                 assert.isObject(newLog);
-
-                logData.splice(0, 0, formatLog(newLog));
-                applyQueryFilter();
-                applyTextFilter();
+                
+                applyFiltersToLog(newLog);
             });
         })
         .catch(function(err) {
@@ -115,6 +113,47 @@ angular.module('app', [
         }
     };
 
+    ///
+    /// When a new log comes in, we don't want to run the query on the entire list of logs, 
+    /// just decide if this new log goes in the visible list or not
+    ///
+    var applyFiltersToLog = function (newLog) {
+        var queryText = $scope.queryText.trim();
+        var filterText = $scope.filterText.trim().toLowerCase();
+
+        if (!queryText && !filterText) {
+            $scope.isValidQuery = true;
+            textFilteredLogs.splice(0, 0, formatLog(newLog));
+            updateVisibleLogs();
+        }
+        else {
+            try {
+                var parsedFilter = parser.parse(queryText);
+                var newLogAsArray = [newLog];
+                var filteredNewLogAsArray = newLogAsArray.filter(parsedFilter);
+                
+                if (filteredNewLogAsArray.length > 0) {
+                    if( JSON.stringify(newLog).indexOf(filterText) !== -1) {
+                        textFilteredLogs.splice(0, 0, formatLog(newLog));
+                    }
+                }
+                
+                updateVisibleLogs();
+
+            }
+            catch (e) {
+                console.error(e.message);
+                $scope.isValidQuery = false;
+            }
+        }
+    }
+
+    var updateVisibleLogs = function () {
+        $scope.filteredLogCount = textFilteredLogs.length;
+        $scope.visibleLogs = [];
+        $scope.addMoreLogs();
+    }
+
     //
     // Apply the text filter.
     //
@@ -128,9 +167,7 @@ angular.module('app', [
                     return JSON.stringify(log).indexOf(filterText) !==  -1;
                 });
         }
-        $scope.filteredLogCount = textFilteredLogs.length;
-        $scope.visibleLogs = [];
-        $scope.addMoreLogs();
+        updateVisibleLogs();
     };
 
     ///
