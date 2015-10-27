@@ -2,13 +2,10 @@
 var app = express();
 var socketio = require('socket.io');
 var bodyParser = require('body-parser');
-var pmongo = require('promised-mongo');
 var path = require('path');
 var clientManager = new require('./clientManager.js')();
 var config = require('./config.js');
-
-var db = pmongo(config.host + '/' + config.database);
-var logsCollection = db.collection(config.logCollectionName);
+var inputPlugin = require('./mongodb-input')({});
 
 app.use(bodyParser.json());
 
@@ -25,19 +22,14 @@ var server = app.listen(process.env.PORT || config.port, function() {
     console.log('Establishing connection with the database...');
     //set up tailable cursors for each
 
-
-    logsCollection.find().toArray().then(function() { 
-        console.log('Database connection established.');
-    });
-
-    var logsCursor = logsCollection.find({}, {}, { tailable: true, timeout: false });
-
-    logsCursor.on('data', function(doc) {        
+    inputPlugin.on( function (doc) {
         clientManager.getClients()
             .forEach(function(client) {
                 client.emit('update', doc);
             });
     });
+    
+    
 });
 
 //client call for data
@@ -45,9 +37,8 @@ app.get('/' + config.secret + '/logs', function(req, res) {
 
     console.log("Retreiving existing logs for client...");
 
-    logsCollection
-        .find()
-        .toArray()
+    inputPlugin
+        .connect()
         .then(function(logs) {            
             console.log("Found " + logs.length + " existing logs.");
 
