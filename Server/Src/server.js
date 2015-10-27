@@ -1,6 +1,10 @@
 ﻿'use strict';
 
-var startServer = function () {
+var startServer = function (inputPlugin) {
+    
+    if (!inputPlugin) {
+        throw new Error("'inputPlugin' argument not specified.");
+    }
     
     var express = require('express');
     var app = express();
@@ -9,7 +13,6 @@ var startServer = function () {
     var path = require('path');
     var clientManager = new require('./clientManager.js')();
     var config = require('./config.js');
-    var inputPlugin = require('./mongodb-input')({});
     
     app.use(bodyParser.json());
     
@@ -77,7 +80,7 @@ if (require.main === module) {
     //
     //Run from command line
     //
-    startServer();
+    startServer(require('./mongodb-input')({}));
 }
 else {
     //
