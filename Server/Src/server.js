@@ -29,7 +29,7 @@ var startServer = function (inputPlugin) {
     //by default the secret is not used
     var secret = "";
     
-    if (conf.get("secret")) {
+    if (conf.get("use-secret")) {
         secret = config.secret;
     }
     
@@ -112,8 +112,8 @@ if (require.main === module) {
     ///Push command line configuration variables to confucious if they exist
     ///
     
-    if (argv.secret) {
-        conf.set("secret", true);
+    if (argv.usesecret) {
+        conf.set("use-secret", true);
     }
     
     if (argv.config) {
