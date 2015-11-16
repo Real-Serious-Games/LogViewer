@@ -26,7 +26,7 @@ var startServer = function (inputPlugin) {
     //St up the server, hook up to the database and preload the data that is currently in there
     var server = app.listen(process.env.PORT || config.port, function() {
     
-        console.log('Establishing connection with the database...');
+        console.log('Establishing connection with the input plugin method...');
         //set up tailable cursors for each
     
         inputPlugin.on( function (doc) {
@@ -77,10 +77,17 @@ var startServer = function (inputPlugin) {
 if (require.main === module) {
     console.log('Starting from command line.');
     
+    var argv = require('yargs').argv;
+    
+    var inputPlugin = './mongodb-input';
+    
+    if (argv.inputplugin) {
+        inputPlugin = argv.inputplugin;
+    }
     //
     //Run from command line
     //
-    startServer(require('./mongodb-input')({}));
+    startServer(require(inputPlugin)({}));
 }
 else {
     //
