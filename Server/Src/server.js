@@ -30,7 +30,7 @@ var startServer = function (inputPlugin) {
     var secret = "";
     
     if (conf.get("use-secret")) {
-        secret = config.secret;
+        secret = conf.get("secret") || config.secret;
     }
     
     ///
@@ -122,6 +122,10 @@ if (require.main === module) {
     
     if (argv.port) {
         conf.set("port", argv.port);
+    }
+    
+    if (argv.secret) {
+        conf.set("secret", argv.secret);
     }
     
     //
