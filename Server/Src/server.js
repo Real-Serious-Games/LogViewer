@@ -24,6 +24,8 @@ var startServer = function (inputPlugin) {
     
     var config = require(configPath);
     
+    var port = conf.get("port") || config.port;
+    
     //by default the secret is not used
     var secret = "";
     
@@ -45,7 +47,7 @@ var startServer = function (inputPlugin) {
     console.log('Booting server...');
     
     //St up the server, hook up to the database and preload the data that is currently in there
-    var server = app.listen(process.env.PORT || config.port, function() {
+    var server = app.listen(process.env.PORT || port, function() {
     
         console.log('Establishing connection with the input plugin method...');
         //set up tailable cursors for each
@@ -106,6 +108,10 @@ if (require.main === module) {
         inputPlugin = argv.inputplugin;
     }
     
+    ///
+    ///Push command line configuration variables to confucious if they exist
+    ///
+    
     if (argv.secret) {
         conf.set("secret", true);
     }
@@ -113,6 +119,11 @@ if (require.main === module) {
     if (argv.config) {
         conf.set("config", argv.config);
     }
+    
+    if (argv.port) {
+        conf.set("port", argv.port);
+    }
+    
     //
     //Run from command line
     //
