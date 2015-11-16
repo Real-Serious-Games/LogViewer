@@ -19,6 +19,7 @@
     "url": "https://github.com/Real-Serious-Games/logviewer"
   },
   "dependencies": {
+    "confucious": "0.0.9",
     "yargs": "^3.30.0"
   }
 }

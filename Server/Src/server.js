@@ -1,5 +1,7 @@
 ﻿'use strict';
 
+var conf = require('confucious');
+
 var startServer = function (inputPlugin) {
     
     if (!inputPlugin) {
@@ -14,10 +16,17 @@ var startServer = function (inputPlugin) {
     var clientManager = new require('./clientManager.js')();
     var config = require('./config.js');
     
+    //by default the secret is not used
+    var secret = "";
+    
+    if (conf.get("secret")) {
+        secret = config.secret;
+    }
+    
     app.use(bodyParser.json());
     
     app.use(
-        '/' + config.secret,
+        '/' + secret,
         express.static(path.join(__dirname, '../../Client'))
     );
     
@@ -40,7 +49,7 @@ var startServer = function (inputPlugin) {
     });
     
     //client call for data
-    app.get('/' + config.secret + '/logs', function(req, res) {
+    app.get('/' + secret + '/logs', function(req, res) {
     
         console.log("Retreiving existing logs for client...");
     
@@ -83,6 +92,10 @@ if (require.main === module) {
     
     if (argv.inputplugin) {
         inputPlugin = argv.inputplugin;
+    }
+    
+    if (argv.secret) {
+        conf.set("secret", true);
     }
     //
     //Run from command line
