@@ -5,7 +5,7 @@
 //
 
 module.exports = function () {
-    var config = require('./config.js');
+    var config = require('./mongo-config.js');
 	var pmongo = require('promised-mongo');
 	var db = pmongo(config.host + '/' + config.database);
 	var logsCollection = db.collection(config.logCollectionName);

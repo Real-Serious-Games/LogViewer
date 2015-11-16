@@ -5,3 +5,4 @@ LogViewer/Server/Src/config.js
 *.suo
 bower_components/
 Server/Src/config.js
+Server/Src/mongo-config.js
