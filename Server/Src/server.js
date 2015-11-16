@@ -14,7 +14,15 @@ var startServer = function (inputPlugin) {
     var bodyParser = require('body-parser');
     var path = require('path');
     var clientManager = new require('./clientManager.js')();
-    var config = require('./config.js');
+    
+    ///
+    ///Set up configuration, allowing the command line to override the config file if necessary
+    ///
+    
+    //load configuration file path
+    var configPath = conf.get("config") || './config.js';
+    
+    var config = require(configPath);
     
     //by default the secret is not used
     var secret = "";
@@ -22,6 +30,10 @@ var startServer = function (inputPlugin) {
     if (conf.get("secret")) {
         secret = config.secret;
     }
+    
+    ///
+    ///Completed configuration set up
+    ///
     
     app.use(bodyParser.json());
     
@@ -96,6 +108,10 @@ if (require.main === module) {
     
     if (argv.secret) {
         conf.set("secret", true);
+    }
+    
+    if (argv.config) {
+        conf.set("config", argv.config);
     }
     //
     //Run from command line
