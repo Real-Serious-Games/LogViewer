@@ -6,3 +6,4 @@ LogViewer/Server/Src/config.js
 bower_components/
 Server/Src/config.js
 Server/Src/mongo-config.js
+node_modules/
