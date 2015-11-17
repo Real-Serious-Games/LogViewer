@@ -31,6 +31,7 @@ var startServer = function (inputPlugin) {
     
     if (conf.get("use-secret")) {
         secret = conf.get("secret") || config.secret;
+        secret = "/" + secret;
     }
     
     ///
@@ -40,7 +41,7 @@ var startServer = function (inputPlugin) {
     app.use(bodyParser.json());
     
     app.use(
-        '/' + secret,
+        secret,
         express.static(path.join(__dirname, '../../Client'))
     );
     
@@ -63,7 +64,7 @@ var startServer = function (inputPlugin) {
     });
     
     //client call for data
-    app.get('/' + secret + '/logs', function(req, res) {
+    app.get(secret + '/logs', function(req, res) {
     
         console.log("Retreiving existing logs for client...");
     

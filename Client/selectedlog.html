@@ -1,0 +1,22 @@
+<div class="log-detail">
+	<div class="log-details-panel panel panel-default">
+		<div class="panel-heading">
+			Selected Log Entry
+		</div>
+		<table class="table">
+			<tr>
+				<td>Timestamp</td>
+				<td>{{selectedLog.Timestamp}}</td>
+			</tr>
+			<tr ng-repeat="(k,v) in selectedLog.Properties">
+				<td><div class="truncate">{{k}}</div></td>
+				<td><div class="truncate">{{v}}</div></td>
+			</tr>
+			<tr>
+				<td>Message</td>
+				<td><div class="truncate">{{selectedLog.RenderedMessage}}</div></td>
+			</tr>
+		</table>
+	</div>
+	<a ui-sref="loglist">Back</a>
+</div>

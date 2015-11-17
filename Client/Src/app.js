@@ -6,17 +6,33 @@
 angular.module('app', [
     'btford.socket-io',
     'app.directives',
-    'angularMoment'
+    'angularMoment',
+    'ui.router'
 ])
 
 .constant('angularMomentConfig', {
     timezone: '+1000'
 })
 
+.config(function ($stateProvider, $urlRouterProvider) {
+    
+    $stateProvider
+        .state('loglist', {
+            url: '/loglist',
+            templateUrl: './loglist.html'
+        })
+        .state('selectedlog', {
+            url: '/selectedlog',
+            templateUrl: './selectedlog.html'
+        });
+    
+    $urlRouterProvider.otherwise("/loglist");
+})
+
 //
 // Application controller.
 //
-.controller('AppCtrl', function AppCtrl($scope, $http, $log, socketFactory) {
+.controller('AppCtrl', function AppCtrl($scope, $http, $log, $state, socketFactory) {
 
     //running log of data received from the server
     var logData = [];
@@ -193,6 +209,7 @@ angular.module('app', [
 
     $scope.selectLog = function (data) {
         $scope.selectedLog = data;
+        $state.go('selectedlog');
     };
     
     $scope.truncate = function (txt) {
