@@ -17,16 +17,38 @@ angular.module('app', [
 .config(function ($stateProvider, $urlRouterProvider) {
     
     $stateProvider
-        .state('loglist', {
-            url: '/loglist',
-            templateUrl: './loglist.html'
+        .state('modal', {
+            views: {
+                "modal": {
+                    templateUrl: "modal.html"
+                }
+            },
+            onEnter: ['$state', function ($state) {
+                $(document).on("keyup", function (e) {
+                    if (e.keyCode == 27) {
+                        $(document).off('keyup');
+                        $state.go("default");
+                    }
+                });
+                
+                $(document).on('click', ".modal-backdrop, .modal-holder", function () {
+                    $state.go("default");
+                });
+                
+                $(document).on('click', ".modal-box, .modal-box *", function (e) {
+                    e.stopPropagation();
+                });
+            }],
+            abstract: true
         })
-        .state('selectedlog', {
-            url: '/selectedlog',
-            templateUrl: './selectedlog.html'
-        });
-    
-    $urlRouterProvider.otherwise("/loglist");
+        .state('modal.selectedlog', {
+            views: {
+                "modal": {
+                    templateUrl: './selectedlog.html'
+                }
+            }
+        })
+        .state('default', {});
 })
 
 //
@@ -209,7 +231,6 @@ angular.module('app', [
 
     $scope.selectLog = function (data) {
         $scope.selectedLog = data;
-        $state.go('selectedlog');
     };
     
     $scope.truncate = function (txt) {

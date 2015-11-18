@@ -28,6 +28,8 @@
 	</div>
 </div>
 
+<div ui-view="modal" autoscroll="false"></div>
+
 <div class="content row-layout">
 	<div class="log-list">
 		<div class="log-panel panel panel-default">
@@ -55,6 +57,7 @@
 					<tr ng-repeat="data in visibleLogs"
 						class=""
 						ng-click="selectLog(data)"
+						ui-sref="modal.selectedlog"
 						ng-class="{
 								'active': selectedLog === data,
 							}">
