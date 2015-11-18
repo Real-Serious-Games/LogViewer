@@ -6,13 +6,8 @@
 angular.module('app', [
     'btford.socket-io',
     'app.directives',
-    'angularMoment',
     'ui.router'
 ])
-
-.constant('angularMomentConfig', {
-    timezone: '+1000'
-})
 
 .config(function ($stateProvider, $urlRouterProvider) {
     
@@ -248,6 +243,10 @@ angular.module('app', [
         }
         return firstLine + "...";
     };
+    
+    $scope.formatMomentToDate = function (momentDate) {
+        return momentDate.toDate();
+    }
 
     $scope.filterLogs = function(element) {
         if (!$scope.query) {

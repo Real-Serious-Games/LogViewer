@@ -26,7 +26,6 @@
     <script src="bower_components/moment/moment.js" type="text/javascript"></script>
     <script src="bower_components/moment-timezone/moment-timezone.js" type="text/javascript"></script>
     <script src="bower_components/linqjs/linq.js" type="text/javascript"></script>
-    <script src="bower_components/angular-moment/angular-moment.js" type="text/javascript"></script>
     <script src="bower_components/moment-range/dist/moment-range.js" type="text/javascript"></script>
 
     <!-- Latest compiled and minified JavaScript -->
@@ -99,7 +98,7 @@
                             ng-class="{
                                     'active': selectedLog === data,
                                 }">
-                            <td>{{data.Timestamp | amDateFormat: 'D-M-YYYY hh:mm'}}</td>
+                            <td>{{formatMomentToDate(data.Timestamp) | date: 'medium'}}</td>
                             <td>
                                 <span class="label"
                                         ng-class="{
