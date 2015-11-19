@@ -1,8 +1,6 @@
 ﻿'use strict';
 
-var conf = require('confucious');
-
-var startServer = function (inputPlugin) {
+var startServer = function (conf, inputPlugin) {
     
     if (!inputPlugin) {
         throw new Error("'inputPlugin' argument not specified.");
@@ -102,37 +100,16 @@ if (require.main === module) {
     console.log('Starting from command line.');
     
     var argv = require('yargs').argv;
+    var conf = require('confucious');
     
-    var inputPlugin = './mongodb-input';
+    conf.set("inputplugin", './mongodb-input');
     
-    if (argv.inputplugin) {
-        inputPlugin = argv.inputplugin;
-    }
-    
-    ///
-    ///Push command line configuration variables to confucious if they exist
-    ///
-    
-    if (argv.usesecret) {
-        conf.set("use-secret", true);
-    }
-    
-    if (argv.config) {
-        conf.set("config", argv.config);
-    }
-    
-    if (argv.port) {
-        conf.set("port", argv.port);
-    }
-    
-    if (argv.secret) {
-        conf.set("secret", argv.secret);
-    }
+    conf.pushArgv();
     
     //
     //Run from command line
     //
-    startServer(require(inputPlugin)({}));
+    startServer(conf, require(conf.get("inputplugin"))());
 }
 else {
     //
