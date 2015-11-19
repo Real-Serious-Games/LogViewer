@@ -5,7 +5,7 @@ A front end viewer for displaying and querying a collection of logs. This system
 The logs will also need to be stored somewhere. The LogViewer is set up to use a plugin style system for connecting to this source. Currently the source code includes a mongo db plugin called mongodb-input.js (which is used by default when run from the command line) that can be used as a guide for creating your own. It is also possible to pipe logs directly from the [RSG LogServer](https://github.com/Real-Serious-Games/LogServer) as it has also been designed to use plugins for it's output.
 
 ##Installation
-	npm install -g rsg-logviewer
+	npm install -g rsg-log-viewer
 
 ##Usage
 
