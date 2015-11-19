@@ -11,24 +11,20 @@ var startServer = function (conf, inputPlugin) {
     var socketio = require('socket.io');
     var bodyParser = require('body-parser');
     var path = require('path');
-    var clientManager = new require('./clientManager.js')();
+    var ClientManager = require('./clientManager.js'); 
+    var clientManager = new ClientManager();
     
     ///
     ///Set up configuration, allowing the command line to override the config file if necessary
     ///
     
-    //load configuration file path
-    var configPath = conf.get("config") || './config.js';
-    
-    var config = require(configPath);
-    
-    var port = conf.get("port") || config.port;
+    var port = conf.get("port");
     
     //by default the secret is not used
     var secret = "";
     
-    if (conf.get("use-secret")) {
-        secret = conf.get("secret") || config.secret;
+    if (conf.get("secret")) {
+        secret = conf.get("secret");
         secret = "/" + secret;
     }
     
@@ -101,15 +97,32 @@ if (require.main === module) {
     
     var argv = require('yargs').argv;
     var conf = require('confucious');
+    var fs = require('fs');
     
+    //set up the default path to the configuration file.
+    var configFilePath ="config.json";
+    
+    //set up the default plugin to use.
     conf.set("inputplugin", './mongodb-input');
+    
+    //if a config file was provided on the command line, check that it exists and use it if it does
+    if (argv.config) {
+        if (fs.existsSync(argv.config)) {
+            configFilePath = argv.config;
+        }
+    }
+    
+    //check that our file exists
+    if (fs.existsSync(configFilePath)) {
+        conf.pushJsonFile(configFilePath);
+    } 
     
     conf.pushArgv();
     
     //
     //Run from command line
     //
-    startServer(conf, require(conf.get("inputplugin"))());
+    startServer(conf, require(conf.get("inputplugin"))(conf));
 }
 else {
     //

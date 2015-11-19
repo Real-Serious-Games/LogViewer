@@ -1,0 +1,7 @@
+{
+	"port": "3412",
+	"secret": "secret",
+	"host": "localhost",
+	"database": "logs",
+	"logCollection": "logs"
+}

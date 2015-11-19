@@ -7,19 +7,27 @@ The logs will also need to be stored somewhere. The LogViewer is set up to use a
 ##Installation
 	npm install -g rsg-log-viewer
 
-##Configuration
-Rename *exampleConfig.js* to *config.js* and fill out the details appropriately. ExampleConfig is thoroughly commented.
-
-If you plan on using the default mongodb-input plugin, also rename *example-mongo-config.js* to *mongo-config.js* and fill it out with your database details.
 
 ##Run
 	rsg-log-viewer [options] 
 
+
+##Configuration
+Edit the file config.json to set the port the server will run on. Any configuration needed for your input plugin will go in here as well and can be overridden on the command line. For instance if you want to use the default mongodb plugin you'd include the database configuration as follows.
+
+	{
+		"port": "3412",
+		"secret": "secret",
+		"host": "localhost",
+		"database": "logs",
+		"logCollection": "logs"
+	}
+	
+	
 ###Command line options
 
 Option 			| Description
 :---: 			| ---
---usesecret		| Use a secret in the url for added security. This can be provided with --secret from the command line, or the config file if no command line argument is provided. [default: false]
 --secret 		| if provided (and --usesecret is provided as well) then this will override the secret provided in the config file.
 --port 			| override the config file's port number
 --config 		| provide the path to a config file, using this instead of the default config.js file
