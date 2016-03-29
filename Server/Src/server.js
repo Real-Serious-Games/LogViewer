@@ -47,14 +47,12 @@ var startServer = function (conf, inputPlugin) {
         console.log('Establishing connection with the input plugin method...');
         //set up tailable cursors for each
     
-        inputPlugin.on( function (doc) {
+        inputPlugin.on(function (doc) {
             clientManager.getClients()
                 .forEach(function(client) {
                     client.emit('update', doc);
                 });
-        });
-        
-        
+        });       
     });
     
     //client call for data
@@ -68,7 +66,14 @@ var startServer = function (conf, inputPlugin) {
                 console.log("Found " + logs.length + " existing logs.");
     
                 res.json(logs.reverse());
-            });
+            })
+            .catch(function (err) {
+                logger.error('Error getting logs.');
+                logger.error(err && err.stack || err);
+
+                res.status(500).end();
+            })
+            ;
     });
     
     var io = socketio.listen(server);
