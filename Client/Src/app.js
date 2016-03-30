@@ -70,7 +70,7 @@ angular.module('app', [
     $scope.selectedLog = null;
 
     //The number of logs to add to the ng-repeat each time the infinite scoll function is called
-    $scope.infiniteScollSize = 30;
+    $scope.infiniteScollSize = 200;
 
     $scope.isValidQuery = true;
 
