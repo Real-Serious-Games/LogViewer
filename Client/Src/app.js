@@ -53,6 +53,7 @@ angular.module('app', [
 
     //running log of data received from the server
     var logData = [];
+    
 
     //a subset of logData with the current filterText applied to it
     var queryFilteredLogs = logData;
@@ -70,7 +71,10 @@ angular.module('app', [
     $scope.selectedLog = null;
 
     //The number of logs to add to the ng-repeat each time the infinite scoll function is called
-    $scope.infiniteScollSize = 200;
+    $scope.infiniteScrollSize = 200;
+
+    //The number of logs received from the server so far.
+    $scope.receivedLogCount = 0;
 
     $scope.isValidQuery = true;
 
@@ -87,25 +91,26 @@ angular.module('app', [
             parser = PEG.buildParser(result.data);
         })
         .then(function () {
-            return $http.get('logs');
+            return $http.get('logs?skip=0&limit='+$scope.infiniteScrollSize);
         })
         .then(function (results) {
             assert.isArray(results.data);
-
+                
+            $scope.receivedLogCount += results.data.length;
+            
             logData = results.data;
             logData = Enumerable.from(logData)
                 .select(formatLog)
                 .toArray();
 
-            $scope.selectedLog = logData[0]; 
-            applyQueryFilter();
-            applyTextFilter();
+            $scope.selectedLog = logData[0];
+            $scope.addMoreLogs(results.data);
 
             var socket = socketFactory();
             socket.on('update', function (newLog) {
                 assert.isObject(newLog);
                 
-                applyFiltersToLog(newLog);
+                $scope.addMoreLogs(newLog);
             });
         })
         .catch(function(err) {
@@ -183,8 +188,6 @@ angular.module('app', [
 
     var updateVisibleLogs = function () {
         $scope.filteredLogCount = textFilteredLogs.length;
-        $scope.visibleLogs = [];
-        $scope.addMoreLogs();
     }
 
     //
@@ -260,14 +263,31 @@ angular.module('app', [
     ///
     ///Infinite scroll function
     ///
-    $scope.addMoreLogs = function (deferredObj) {
-        var index = $scope.visibleLogs.length;
-        var remaining = textFilteredLogs.length - index;
-        var numberOfNewItems = Math.min(remaining, $scope.infiniteScollSize);
-        var newItems = textFilteredLogs.slice(index, index + numberOfNewItems);
-        $scope.visibleLogs = $scope.visibleLogs.concat(newItems);
-        if(deferredObj) {
-            deferredObj.resolve();
-        }
+    $scope.requestMoreLogs = function (deferredObj) {
+        
+        $http.get('logs?skip=' + $scope.receivedLogCount + '&limit='+$scope.infiniteScrollSize)
+            .then(function (results) {
+                assert.isArray(results.data);
+                
+                $scope.receivedLogCount += results.data.length;
+                
+                logData.push.apply(logData, results.data);
+                logData = Enumerable.from(logData)
+                    .select(formatLog)
+                    .toArray();
+                    
+                $scope.addMoreLogs(results.data);
+                if (deferredObj) {
+                    deferredObj.resolve();
+                }
+            })
+            .catch(function(err) {
+                $log.error(err);
+                deferredObj.reject(err);
+            });
+    }
+    
+    $scope.addMoreLogs = function (logs) {
+        $scope.visibleLogs = $scope.visibleLogs.concat(logs);
     }
 });

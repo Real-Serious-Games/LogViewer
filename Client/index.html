@@ -61,7 +61,7 @@
         </div>
         <div>
             <br/>
-            <label>Total logs after filter: {{filteredLogCount}}</label>
+            <label>Total logs after filter: {{receivedLogCount}}</label>
         </div>
     </div>
 
@@ -90,7 +90,7 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody  infinite-scroll="addMoreLogs">
+                    <tbody  infinite-scroll="requestMoreLogs">
                         <tr ng-repeat="data in visibleLogs"
                             class=""
                             ng-click="selectLog(data)"
