@@ -5,6 +5,7 @@
 //
 
 module.exports = function (conf) {
+    var assert = require('chai').assert;
     
     ///Error handling
     if (!conf.get('host')) {
@@ -26,10 +27,6 @@ module.exports = function (conf) {
     
     //the function that is called when new logs arrive from the database
     var newLogCallback;
-	
-	logsCollection.find().toArray().then(function() { 
-        console.log('Database connection established.');
-    });
 
     var logsCursor = logsCollection.find({}, {}, { tailable: true, timeout: false });
 
@@ -46,8 +43,16 @@ module.exports = function (conf) {
         },
         
         //returns a promise that resolves once the initial logs are received.
-        connect: function () {
-            return logsCollection.find().toArray();
+        request: function (skip, limit) {
+            assert.isNumber(skip);
+            assert.isNumber(limit);
+            
+            console.log('limit: ' + limit + ' skip: ' + skip);
+            return logsCollection.find()
+                .sort({ _id: -1 })
+                .limit(limit)
+                .skip(skip)
+                .toArray();
         }
 	}
 }

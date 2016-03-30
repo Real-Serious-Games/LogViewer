@@ -59,15 +59,31 @@ var startServer = function (conf, inputPlugin) {
     
     //client call for data
     app.get(secret + '/logs', function(req, res) {
-    
+        
+        //set up defaults
+        var skip = 0;
+        var limit = 200;
+        
+        //override with params
+        if (req.query.skip) {
+            skip = parseInt(req.query.skip);
+        }
+        
+        if (req.query.limit) {
+            limit = parseInt(req.query.limit);
+        }
+        
         console.log("Retreiving existing logs for client...");
     
         inputPlugin
-            .connect()
+            .request(skip, limit)
             .then(function(logs) {            
                 console.log("Found " + logs.length + " existing logs.");
-    
-                res.json(logs.reverse());
+                res.json(logs);
+            })
+            .catch(function(err) {
+               console.error(err && err.stack || err);
+               res.status(500).end(); 
             });
     });
     
