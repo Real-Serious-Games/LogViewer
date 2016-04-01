@@ -110,7 +110,7 @@ angular.module('app', [
             socket.on('update', function (newLog) {
                 assert.isObject(newLog);
                 
-                $scope.addMoreLogs(newLog);
+                $scope.addLogsToTop(newLog);
             });
         })
         .catch(function(err) {
@@ -289,5 +289,9 @@ angular.module('app', [
     
     $scope.addMoreLogs = function (logs) {
         $scope.visibleLogs = $scope.visibleLogs.concat(logs);
+    }
+    
+    $scope.addLogsToTop = function (logs) {
+        $scope.visibleLogs = logs.concat($scope.visibleLogs);
     }
 });
