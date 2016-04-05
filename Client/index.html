@@ -80,6 +80,9 @@
                                 #
                             </th>
                             <th>
+                                ID
+                            </th>
+                            <th>
                                 Timestamp
                             </th>
                             <th>
@@ -102,6 +105,7 @@
                                     'active': selectedLog === data,
                                 }">
                             <td>{{$index}}</td>
+                            <td>{{data._id.substring(data._id.length-4, data._id.length)}}</td>
                             <td>{{formatMomentToDate(data.Timestamp) | date: 'medium'}}</td>
                             <td>
                                 <span class="label"

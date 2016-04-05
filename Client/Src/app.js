@@ -219,7 +219,7 @@ angular.module('app', [
         }
         return firstLine + "...";
     };
-    
+
     $scope.formatMomentToDate = function (momentDate) {
         return momentDate.toDate();
     };
