@@ -261,10 +261,12 @@ angular.module('app', [
     //
     var addMoreLogs = function (logs) {
         assert.isArray(logs);
-        //todo: should filter individual items for performance.
-        logData = logData.concat(logs); //todo: could use splice??
-        queryFilteredLogs = applyQueryFilter(logData);
-        textFilteredLogs = applyTextFilter(queryFilteredLogs);
+
+        logData = logData.concat(logs);
+        var queryFiltered = applyQueryFilter(logs);
+        queryFilteredLogs = queryFilteredLogs.concat(queryFiltered); // Only filter incoming logs.
+        var textFiltered = applyTextFilter(queryFiltered);
+        textFilteredLogs = textFilteredLogs.concat(textFiltered); // Only filter incoming logs.
         updateVisibleLogs(textFilteredLogs);
     };
     
@@ -273,10 +275,12 @@ angular.module('app', [
     //
     var addLogsToTop = function (logs) {
         assert.isArray(logs);
-        //todo: should filter individual items for performance.
-        logData = logs.concat(logData); //todo: could use splice??
-        queryFilteredLogs = applyQueryFilter(logData);
-        textFilteredLogs = applyTextFilter(queryFilteredLogs);
+
+        logData = logs.concat(logData);
+        var queryFiltered = applyQueryFilter(logs);  // Only filter incoming logs.
+        queryFilteredLogs = queryFiltered.concat(queryFilteredLogs);
+        var textFiltered = applyTextFilter(queryFiltered);
+        textFilteredLogs = textFiltered.concat(textFilteredLogs); // Only filter incoming logs.
         updateVisibleLogs(textFilteredLogs);
     };
 });
