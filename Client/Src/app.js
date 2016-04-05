@@ -90,19 +90,12 @@ angular.module('app', [
             parser = PEG.buildParser(result.data);
         })
         .then(function () {
-            return $http.get('logs?skip=0&limit='+$scope.infiniteScrollSize);
+            return requestLogsFromServer(0, $scope.infiniteScrollSize)
         })
-        .then(function (results) { //todo: why not just call request more logs?
-            assert.isArray(results.data);
+        .then(function (incomingLogs) {
                 
-            var incomingLogs = results.data;
             $scope.receivedLogCount += incomingLogs.length;
-
-            var formattedLogs = Enumerable.from(incomingLogs)
-                .select(formatLog)
-                .toArray();
-            
-            addMoreLogs(formattedLogs);
+            addMoreLogs(incomingLogs);
 
             var socket = socketFactory();
             socket.on('update', function (newLog) {
@@ -111,8 +104,8 @@ angular.module('app', [
                 addLogsToTop(formatLog(newLog));
             });
         })
-        .catch(function(err) {
-            $log.error(err);
+        .catch(function (err) {
+            $log.error(err && err.stack || err);
         });
 
     var formatLog = function (log) {
@@ -215,23 +208,36 @@ angular.module('app', [
         return momentDate.toDate();
     };
 
+    // 
+    // Get existing logs from the server.
+    //
+    var requestLogsFromServer = function (skip, limit) {
+        assert.isNumber(skip);
+        assert.isNumber(limit);
+
+        return $http.get('logs?skip=' + skip + '&limit=' + limit)
+            .then(function (results) {
+                assert.isArray(results.data);
+
+                return results.data;
+            })
+            .then(function (incomingLogs) {
+                
+                return Enumerable.from(incomingLogs)
+                    .select(formatLog)
+                    .toArray();                    
+            });
+    };
+
     //
     // Infinite scroll function
     //
     $scope.requestMoreLogs = function (deferredObj) {
-        
-        $http.get('logs?skip=' + $scope.receivedLogCount + '&limit='+$scope.infiniteScrollSize)
-            .then(function (results) {
-                assert.isArray(results.data);
-                
-                var incomingLogs = results.data;
+
+        requestLogsFromServer($scope.receivedLogCount, $scope.infiniteScrollSize)
+            .then(function (incomingLogs) {
                 $scope.receivedLogCount += incomingLogs.length;
-                
-                var formattedLogs = Enumerable.from(incomingLogs)
-                    .select(formatLog)
-                    .toArray();
-                    
-                addMoreLogs(formattedLogs);
+                addMoreLogs(incomingLogs);
                 if (deferredObj) {
                     deferredObj.resolve();
                 }
