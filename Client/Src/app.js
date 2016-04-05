@@ -61,7 +61,7 @@ angular.module('app', [
 
     //the currently truncated subsection of filteredLogs that we are rendering, using an infinite scroll to 
     //append more filtered logs when needed
-    $scope.visibleLogs = logData;
+    $scope.visibleLogs = textFilteredLogs;
 
     //current text filter to apply to the logData to produce the filteredLogs
     $scope.queryText = "";
@@ -81,7 +81,6 @@ angular.module('app', [
     $scope.filteredLogCount = 0;
 
     $scope.query = "";
-    $scope.propertyQuery = "AppInstanceID";
 
     var parser = null;
 
@@ -93,24 +92,23 @@ angular.module('app', [
         .then(function () {
             return $http.get('logs?skip=0&limit='+$scope.infiniteScrollSize);
         })
-        .then(function (results) {
+        .then(function (results) { //todo: why not just call request more logs?
             assert.isArray(results.data);
                 
-            $scope.receivedLogCount += results.data.length;
-            
-            logData = results.data;
-            logData = Enumerable.from(logData)
+            var incomingLogs = results.data;
+            $scope.receivedLogCount += incomingLogs.length;
+
+            var formattedLogs = Enumerable.from(incomingLogs)
                 .select(formatLog)
                 .toArray();
-
-            $scope.selectedLog = logData[0];
-            $scope.addMoreLogs(results.data);
+            
+            addMoreLogs(formattedLogs);
 
             var socket = socketFactory();
             socket.on('update', function (newLog) {
                 assert.isObject(newLog);
                 
-                $scope.addLogsToTop(newLog);
+                addLogsToTop(formatLog(newLog));
             });
         })
         .catch(function(err) {
@@ -151,45 +149,6 @@ angular.module('app', [
         }
     };
 
-    ///
-    /// When a new log comes in, we don't want to run the query on the entire list of logs, 
-    /// just decide if this new log goes in the visible list or not
-    ///
-    var applyFiltersToLog = function (newLog) {
-        var queryText = $scope.queryText.trim();
-        var filterText = $scope.filterText.trim().toLowerCase();
-
-        if (!queryText && !filterText) {
-            $scope.isValidQuery = true;
-            textFilteredLogs.splice(0, 0, formatLog(newLog));
-            updateVisibleLogs();
-        }
-        else {
-            try {
-                var parsedFilter = parser.parse(queryText);
-                var newLogAsArray = [newLog];
-                var filteredNewLogAsArray = newLogAsArray.filter(parsedFilter);
-                
-                if (filteredNewLogAsArray.length > 0) {
-                    if( JSON.stringify(newLog).indexOf(filterText) !== -1) {
-                        textFilteredLogs.splice(0, 0, formatLog(newLog));
-                    }
-                }
-                
-                updateVisibleLogs();
-
-            }
-            catch (e) {
-                console.error(e.message);
-                $scope.isValidQuery = false;
-            }
-        }
-    }
-
-    var updateVisibleLogs = function () {
-        $scope.filteredLogCount = textFilteredLogs.length;
-    }
-
     //
     // Apply the text filter.
     //
@@ -206,9 +165,14 @@ angular.module('app', [
         updateVisibleLogs();
     };
 
-    ///
-    ///Recognise a change in the filter
-    ///
+    var updateVisibleLogs = function () {
+        $scope.visibleLogs = textFilteredLogs;
+        $scope.filteredLogCount = textFilteredLogs.length;
+    };
+
+    //
+    // Recognise a change in the filter
+    //
     $scope.queryChanged = function () {
         applyQueryFilter();
         applyTextFilter();
@@ -225,7 +189,7 @@ angular.module('app', [
         $scope.visibleLogs = [];
         $scope.filteredLogCount = 0;
         $scope.selectedLog = null;
-    }
+    };
 
     $scope.selectLog = function (data) {
         $scope.selectedLog = data;
@@ -249,34 +213,25 @@ angular.module('app', [
     
     $scope.formatMomentToDate = function (momentDate) {
         return momentDate.toDate();
-    }
-
-    $scope.filterLogs = function(element) {
-        if (!$scope.query) {
-            return true;
-        }
-
-        var propertyValue = element.Properties[$scope.propertyQuery].toLowerCase();
-        return propertyValue.indexOf($scope.query.toLowerCase()) >= 0;
     };
 
-    ///
-    ///Infinite scroll function
-    ///
+    //
+    // Infinite scroll function
+    //
     $scope.requestMoreLogs = function (deferredObj) {
         
         $http.get('logs?skip=' + $scope.receivedLogCount + '&limit='+$scope.infiniteScrollSize)
             .then(function (results) {
                 assert.isArray(results.data);
                 
-                $scope.receivedLogCount += results.data.length;
+                var incomingLogs = results.data;
+                $scope.receivedLogCount += incomingLogs.length;
                 
-                logData.push.apply(logData, results.data);
-                logData = Enumerable.from(logData)
+                var formattedLogs = Enumerable.from(incomingLogs)
                     .select(formatLog)
                     .toArray();
                     
-                $scope.addMoreLogs(results.data);
+                addMoreLogs(formattedLogs);
                 if (deferredObj) {
                     deferredObj.resolve();
                 }
@@ -285,13 +240,27 @@ angular.module('app', [
                 $log.error(err);
                 deferredObj.reject(err);
             });
-    }
+    };
     
-    $scope.addMoreLogs = function (logs) {
-        $scope.visibleLogs = $scope.visibleLogs.concat(logs);
-    }
+    //
+    // Add logs to the bottom.
+    //
+    var addMoreLogs = function (logs) {
+        assert.isArray(logs);
+        //todo: should filter individual items for performance.
+        logData = logData.concat(logs); //todo: could use splice??
+        applyQueryFilter();
+        applyTextFilter();
+    };
     
-    $scope.addLogsToTop = function (logs) {
-        $scope.visibleLogs = logs.concat($scope.visibleLogs);
-    }
+    //
+    // Add logs to the top.
+    //
+    var addLogsToTop = function (logs) {
+        assert.isArray(logs);
+        //todo: should filter individual items for performance.
+        logData = logs.concat(logData); //todo: could use splice??
+        applyQueryFilter();
+        applyTextFilter();
+    };
 });
