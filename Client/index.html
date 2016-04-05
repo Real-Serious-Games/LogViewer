@@ -50,14 +50,32 @@
                 'has-error': !isValidQuery,
             }">
             <label>Query</label>
-            <input style="Width: 50%" ng-model="queryText" type="text" placeholder="Enter query" ng-change="queryChanged()" class="form-control" autofocus>
+            <input 
+                style="Width: 50%" 
+                ng-model="queryText" 
+                ng-model-options="{ debounce: 1000 }"
+                type="text" 
+                placeholder="Enter query" 
+                ng-change="queryChanged()" 
+                class="form-control" 
+                autofocus
+                >
         </div>
     
         <div
             class="row-layout vertical-center-child"
             >
             <label>Text</label>
-            <input style="Width: 50%" ng-model="filterText" type="text" placeholder="Enter text" ng-change="filterChanged()" class="form-control" autofocus>
+            <input 
+                style="Width: 50%" 
+                ng-model="filterText" 
+                ng-model-options="{ debounce: 1000 }"                
+                type="text" 
+                placeholder="Enter text" 
+                ng-change="filterChanged()" 
+                class="form-control" 
+                autofocus
+                >
         </div>
         <div>
             <br/>
