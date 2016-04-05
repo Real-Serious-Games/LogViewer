@@ -28,13 +28,24 @@ module.exports = function (conf) {
     //the function that is called when new logs arrive from the database
     var newLogCallback;
 
-    var logsCursor = logsCollection.find({}, {}, { tailable: true, timeout: false });
+    logsCollection.count()
+        .then(function (existingCount) {
 
-    logsCursor.on('data', function(doc) {        
-        if (newLogCallback) {
-            newLogCallback(doc);
-        }
-    });
+            var logsCursor = logsCollection.find({}, {}, { tailable: true, timeout: false });
+
+            logsCursor.on('data', function(doc) {        
+                if (existingCount > 0) {
+                    // Skip logs already in the database.
+                    // It would be nice to use the 'skip' function for this, but it doesn't appear to work for capped collections.
+                    --existingCount; 
+                    return;
+                }
+
+                if (newLogCallback) {
+                    newLogCallback(doc);
+                }
+            });
+        });
 
 	return {
         //callback is a function expects the new entry
