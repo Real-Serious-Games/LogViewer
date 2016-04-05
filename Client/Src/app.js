@@ -70,8 +70,14 @@ angular.module('app', [
     //currently selected log
     $scope.selectedLog = null;
 
-    //The number of logs to add to the ng-repeat each time the infinite scoll function is called
-    var infiniteScrollSize = 200;
+    // The number of logs to request from the server.
+    var requestSize = 1000;
+
+    // Min logs that should be on screen (to make the scrollbar appear).
+    var minLogsToDisplay = 100;
+
+    // Min logs that should be retreived after filtering.
+    var minLogsToRetreive = 100;
 
     //The number of logs received from the server so far.
     $scope.receivedLogCount = 0;
@@ -90,7 +96,7 @@ angular.module('app', [
             parser = PEG.buildParser(result.data);
         })
         .then(function () {
-            return requestLogsFromServer(0, infiniteScrollSize)
+            return requestLogsFromServer(0, requestSize)
         })
         .then(function (incomingLogs) {
                 
@@ -167,6 +173,7 @@ angular.module('app', [
 
         $scope.visibleLogs = logs;
         $scope.filteredLogCount = logs.length;
+        console.log($scope.filteredLogCount + " logs are now visible.");
     };
 
     //
@@ -177,8 +184,16 @@ angular.module('app', [
         textFilteredLogs = applyTextFilter(queryFilteredLogs);
         updateVisibleLogs(textFilteredLogs);
 
-        if (textFilteredLogs.length < infiniteScrollSize) {
-            populateMoreLogs(infiniteScrollSize);
+        if (textFilteredLogs.length < minLogsToDisplay) {
+            var numLogsToAdd = minLogsToDisplay-textFilteredLogs.length;
+            console.log('** Adding ' + numLogsToAdd + ' logs after filter change so we have the minimum amount.')
+            populateMoreLogs(requestSize, numLogsToAdd)
+                .then(function (numLogsAdded) {
+                    console.log('-- Added ' + numLogsAdded + ' logs after filter change.');
+                })
+                .catch(function (err) {
+                    console.error(err && err.stack || err);
+                });
         }
     };
 
@@ -186,8 +201,16 @@ angular.module('app', [
         textFilteredLogs = applyTextFilter(queryFilteredLogs);
         updateVisibleLogs(textFilteredLogs);
 
-        if (textFilteredLogs.length < infiniteScrollSize) {
-            populateMoreLogs(infiniteScrollSize);
+        if (textFilteredLogs.length < minLogsToDisplay) {
+            var numLogsToAdd = minLogsToDisplay-textFilteredLogs.length;
+            console.log('** Adding ' + numLogsToAdd + ' logs after filter change so we have the minimum amount.')
+            populateMoreLogs(requestSize, numLogsToAdd)
+                .then(function (numLogsAdded) {
+                    console.log('-- Added ' + numLogsAdded + ' logs after filter change.');
+                })
+                .catch(function (err) {
+                    console.error(err && err.stack || err);
+                });
         }
     };
 
@@ -238,6 +261,7 @@ angular.module('app', [
                 return results.data;
             })
             .then(function (incomingLogs) {
+                console.log("Got " + incomingLogs.length + " logs from the server.");
                 
                 return Enumerable.from(incomingLogs)
                     .select(formatLog)
@@ -248,22 +272,25 @@ angular.module('app', [
     //
     // Populate more logs into the client list as it is scrolled.
     //
-    var populateMoreLogs = function (limit) {
-        return requestLogsFromServer($scope.receivedLogCount, limit)
+    var populateMoreLogs = function (requestSize, minAmountToAdd) {
+        assert.isNumber(requestSize);
+        assert.isNumber(minAmountToAdd);
+
+        return requestLogsFromServer($scope.receivedLogCount, requestSize)
             .then(function (incomingLogs) {
                 if (incomingLogs.length === 0) {
                     // No more logs to get.
-                    return;
+                    return 0;
                 }
 
                 // Got a bunch of logs.
                 $scope.receivedLogCount += incomingLogs.length;
                 
                 var numAddedAfterFilter = addMoreLogs(incomingLogs);
-                if (numAddedAfterFilter < limit) {
+                if (numAddedAfterFilter < minAmountToAdd) {
                     // Logs were filtered out so we haven't reached our limit yet.
                     // Recurse and get more logs.
-                    return populateMoreLogs(limit - numAddedAfterFilter)
+                    return populateMoreLogs(requestSize, minAmountToAdd - numAddedAfterFilter)
                         .then(function (numLogsAdded) {
                             return numAddedAfterFilter + numLogsAdded;
                         });
@@ -278,9 +305,11 @@ angular.module('app', [
     //
     $scope.requestMoreLogs = function (deferredObj) {
 
-        populateMoreLogs(infiniteScrollSize)
+        console.log('** Adding ' + requestSize + ' more logs to the infinite scroller.');
+
+        populateMoreLogs(requestSize, minLogsToRetreive)
             .then(function (numLogsAdded) {
-                console.log('Added ' + numLogsAdded + " logs to the visible list.");
+                console.log('-- Populated ' + numLogsAdded + " logs into the visible list.");
 
                 if (deferredObj) {
                     deferredObj.resolve();
@@ -302,10 +331,11 @@ angular.module('app', [
         var queryFiltered = applyQueryFilter(logs);
         queryFilteredLogs = queryFilteredLogs.concat(queryFiltered); // Only filter incoming logs.
         var textFiltered = applyTextFilter(queryFiltered);
+        console.log("Have " + textFiltered.length + " logs after filtering.");
         textFilteredLogs = textFilteredLogs.concat(textFiltered); // Only filter incoming logs.
         updateVisibleLogs(textFilteredLogs);
 
-        return textFilteredLogs.length; // Number of logs actually added to the visible list.
+        return textFiltered.length; // Number of logs actually added to the visible list.
     };
     
     //
@@ -318,10 +348,11 @@ angular.module('app', [
         var queryFiltered = applyQueryFilter(logs);  // Only filter incoming logs.
         queryFilteredLogs = queryFiltered.concat(queryFilteredLogs);
         var textFiltered = applyTextFilter(queryFiltered);
+        console.log("Have " + textFiltered.length + " logs after filtering.");
         textFilteredLogs = textFiltered.concat(textFilteredLogs); // Only filter incoming logs.
 
         updateVisibleLogs(textFilteredLogs);
 
-        return textFilteredLogs.length; // Number of logs actually added to the visible list.
+        return textFiltered.length; // Number of logs actually added to the visible list.
     };
 });
