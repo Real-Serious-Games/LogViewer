@@ -77,6 +77,9 @@
                     <thead>
                         <tr>
                             <th>
+                                #
+                            </th>
+                            <th>
                                 Timestamp
                             </th>
                             <th>
@@ -98,6 +101,7 @@
                             ng-class="{
                                     'active': selectedLog === data,
                                 }">
+                            <td>{{$index}}</td>
                             <td>{{formatMomentToDate(data.Timestamp) | date: 'medium'}}</td>
                             <td>
                                 <span class="label"
