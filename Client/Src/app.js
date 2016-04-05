@@ -123,21 +123,24 @@ angular.module('app', [
     //
     // Apply the query filter.
     //
-    var applyQueryFilter = function () {
+    var applyQueryFilter = function (logsToFilter) {
+        assert.isArray(logsToFilter);
+
         var queryText = $scope.queryText.trim();
         if (!queryText) {
             $scope.isValidQuery = true;
-            queryFilteredLogs = logData;
+            return logsToFilter;
         } 
         else {
             try {
                 var parsedFilter = parser.parse(queryText);
-                queryFilteredLogs = logData.filter(parsedFilter);
                 $scope.isValidQuery = true;
+                return logsToFilter.filter(parsedFilter);
             }
             catch (e) {
                 console.error(e.message);
                 $scope.isValidQuery = false;
+                return logsToFilter;
             }   
         }
     };
@@ -145,34 +148,39 @@ angular.module('app', [
     //
     // Apply the text filter.
     //
-    var applyTextFilter = function () {
+    var applyTextFilter = function (logsToFilter) {
+        assert.isArray(logsToFilter);
+
         var filterText = $scope.filterText.trim().toLowerCase();        
         if (!filterText) {
-            textFilteredLogs = queryFilteredLogs;
+            return logsToFilter;
         } 
         else {
-            textFilteredLogs = queryFilteredLogs.filter(function (log) {
+            return logsToFilter.filter(function (log) {
                     return JSON.stringify(log).indexOf(filterText) !==  -1;
                 });
         }
-        updateVisibleLogs();
     };
 
-    var updateVisibleLogs = function () {
-        $scope.visibleLogs = textFilteredLogs;
-        $scope.filteredLogCount = textFilteredLogs.length;
+    var updateVisibleLogs = function (logs) {
+        assert.isArray(logs);
+
+        $scope.visibleLogs = logs;
+        $scope.filteredLogCount = logs.length;
     };
 
     //
     // Recognise a change in the filter
     //
     $scope.queryChanged = function () {
-        applyQueryFilter();
-        applyTextFilter();
+        queryFilteredLogs = applyQueryFilter(logData);
+        textFilteredLogs = applyTextFilter(queryFilteredLogs);
+        updateVisibleLogs(textFilteredLogs);
     };
 
     $scope.filterChanged = function () {
-        applyTextFilter();
+        textFilteredLogs = applyTextFilter(queryFilteredLogs);
+        updateVisibleLogs(textFilteredLogs);
     };
 
     $scope.clearLog = function () {
@@ -255,8 +263,9 @@ angular.module('app', [
         assert.isArray(logs);
         //todo: should filter individual items for performance.
         logData = logData.concat(logs); //todo: could use splice??
-        applyQueryFilter();
-        applyTextFilter();
+        queryFilteredLogs = applyQueryFilter(logData);
+        textFilteredLogs = applyTextFilter(queryFilteredLogs);
+        updateVisibleLogs(textFilteredLogs);
     };
     
     //
@@ -266,7 +275,8 @@ angular.module('app', [
         assert.isArray(logs);
         //todo: should filter individual items for performance.
         logData = logs.concat(logData); //todo: could use splice??
-        applyQueryFilter();
-        applyTextFilter();
+        queryFilteredLogs = applyQueryFilter(logData);
+        textFilteredLogs = applyTextFilter(queryFilteredLogs);
+        updateVisibleLogs(textFilteredLogs);
     };
 });
