@@ -71,7 +71,7 @@ angular.module('app', [
     $scope.selectedLog = null;
 
     //The number of logs to add to the ng-repeat each time the infinite scoll function is called
-    $scope.infiniteScrollSize = 200;
+    var infiniteScrollSize = 200;
 
     //The number of logs received from the server so far.
     $scope.receivedLogCount = 0;
@@ -90,7 +90,7 @@ angular.module('app', [
             parser = PEG.buildParser(result.data);
         })
         .then(function () {
-            return requestLogsFromServer(0, $scope.infiniteScrollSize)
+            return requestLogsFromServer(0, infiniteScrollSize)
         })
         .then(function (incomingLogs) {
                 
@@ -176,11 +176,19 @@ angular.module('app', [
         queryFilteredLogs = applyQueryFilter(logData);
         textFilteredLogs = applyTextFilter(queryFilteredLogs);
         updateVisibleLogs(textFilteredLogs);
+
+        if (textFilteredLogs.length < infiniteScrollSize) {
+            populateMoreLogs(infiniteScrollSize);
+        }
     };
 
     $scope.filterChanged = function () {
         textFilteredLogs = applyTextFilter(queryFilteredLogs);
         updateVisibleLogs(textFilteredLogs);
+
+        if (textFilteredLogs.length < infiniteScrollSize) {
+            populateMoreLogs(infiniteScrollSize);
+        }
     };
 
     $scope.clearLog = function () {
@@ -238,14 +246,42 @@ angular.module('app', [
     };
 
     //
+    // Populate more logs into the client list as it is scrolled.
+    //
+    var populateMoreLogs = function (limit) {
+        return requestLogsFromServer($scope.receivedLogCount, limit)
+            .then(function (incomingLogs) {
+                if (incomingLogs.length === 0) {
+                    // No more logs to get.
+                    return;
+                }
+
+                // Got a bunch of logs.
+                $scope.receivedLogCount += incomingLogs.length;
+                
+                var numAddedAfterFilter = addMoreLogs(incomingLogs);
+                if (numAddedAfterFilter < limit) {
+                    // Logs were filtered out so we haven't reached our limit yet.
+                    // Recurse and get more logs.
+                    return populateMoreLogs(limit - numAddedAfterFilter)
+                        .then(function (numLogsAdded) {
+                            return numAddedAfterFilter + numLogsAdded;
+                        });
+                }
+
+                return numAddedAfterFilter;
+            });
+    };
+
+    //
     // Infinite scroll function
     //
     $scope.requestMoreLogs = function (deferredObj) {
 
-        requestLogsFromServer($scope.receivedLogCount, $scope.infiniteScrollSize)
-            .then(function (incomingLogs) {
-                $scope.receivedLogCount += incomingLogs.length;
-                addMoreLogs(incomingLogs);
+        populateMoreLogs(infiniteScrollSize)
+            .then(function (numLogsAdded) {
+                console.log('Added ' + numLogsAdded + " logs to the visible list.");
+
                 if (deferredObj) {
                     deferredObj.resolve();
                 }
@@ -268,6 +304,8 @@ angular.module('app', [
         var textFiltered = applyTextFilter(queryFiltered);
         textFilteredLogs = textFilteredLogs.concat(textFiltered); // Only filter incoming logs.
         updateVisibleLogs(textFilteredLogs);
+
+        return textFilteredLogs.length; // Number of logs actually added to the visible list.
     };
     
     //
@@ -281,6 +319,9 @@ angular.module('app', [
         queryFilteredLogs = queryFiltered.concat(queryFilteredLogs);
         var textFiltered = applyTextFilter(queryFiltered);
         textFilteredLogs = textFiltered.concat(textFilteredLogs); // Only filter incoming logs.
+
         updateVisibleLogs(textFilteredLogs);
+
+        return textFilteredLogs.length; // Number of logs actually added to the visible list.
     };
 });
