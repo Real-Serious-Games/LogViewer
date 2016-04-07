@@ -18,8 +18,8 @@
 }
 
 .log-details-panel {
-    margin-top: 5em;
-    margin-right: 1em;
+    max-height: 800px;
+    overflow-y: scroll;
 }
 
 .log-list {
