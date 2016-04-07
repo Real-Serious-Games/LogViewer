@@ -79,8 +79,8 @@ angular.module('app', [
     // Min logs that should be retreived after filtering.
     var minLogsToRetreive = 100;
 
-    //The number of logs received from the server so far.
-    $scope.receivedLogCount = 0;
+    // The number of logs received from the server so far.
+    var receivedLogCount = 0;
 
     $scope.isValidQuery = true;
 
@@ -100,7 +100,7 @@ angular.module('app', [
         })
         .then(function (incomingLogs) {
                 
-            $scope.receivedLogCount += incomingLogs.length;
+            receivedLogCount += incomingLogs.length;
             addMoreLogs(incomingLogs);
 
             var socket = socketFactory();
@@ -276,7 +276,7 @@ angular.module('app', [
         assert.isNumber(requestSize);
         assert.isNumber(minAmountToAdd);
 
-        return requestLogsFromServer($scope.receivedLogCount, requestSize)
+        return requestLogsFromServer(receivedLogCount, requestSize)
             .then(function (incomingLogs) {
                 if (incomingLogs.length === 0) {
                     // No more logs to get.
@@ -284,7 +284,7 @@ angular.module('app', [
                 }
 
                 // Got a bunch of logs.
-                $scope.receivedLogCount += incomingLogs.length;
+                receivedLogCount += incomingLogs.length;
                 
                 var numAddedAfterFilter = addMoreLogs(incomingLogs);
                 if (numAddedAfterFilter < minAmountToAdd) {
