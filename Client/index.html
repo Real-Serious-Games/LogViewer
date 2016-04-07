@@ -101,7 +101,10 @@
                                 ID
                             </th>
                             <th>
-                                Timestamp
+                                Date
+                            </th>
+                            <th>
+                                Time
                             </th>
                             <th>
                                 Level
@@ -124,7 +127,8 @@
                                 }">
                             <td>{{$index}}</td>
                             <td>{{data._id.substring(data._id.length-4, data._id.length)}}</td>
-                            <td>{{formatMomentToDate(data.Timestamp) | date: 'medium'}}</td>
+                            <td>{{formatMomentToDate(data.Timestamp) | date: 'yyyy-MM-dd'}}</td>
+                            <td>{{formatMomentToDate(data.Timestamp) | date: 'HH:mm:ss'}}</td>
                             <td>
                                 <span class="label"
                                         ng-class="{
