@@ -107,7 +107,7 @@ angular.module('app', [
             socket.on('update', function (newLog) {
                 assert.isObject(newLog);
                 
-                addLogsToTop(formatLog(newLog));
+                addLogsToTop([formatLog(newLog)]);
             });
         })
         .catch(function (err) {
