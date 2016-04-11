@@ -31,6 +31,8 @@ module.exports = function (conf) {
     logsCollection.count()
         .then(function (existingCount) {
 
+            console.log('Querying the logs collection...');
+
             var logsCursor = logsCollection.find({}, {}, { tailable: true, timeout: false });
 
             logsCursor.on('data', function(doc) {        
