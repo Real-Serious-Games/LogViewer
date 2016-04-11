@@ -24,7 +24,7 @@ module.exports = function (conf) {
 	var pmongo = require('promised-mongo');
     var databaseConnectionString = conf.get("host") + '/' + conf.get("database");
     var databaseCollection = conf.get("logCollection");
-    console.log('Log viewering connecting to database: ' databaseConnectionString + ", collecton: " + databaseCollection);
+    console.log('Log viewering connecting to database: ' + databaseConnectionString + ", collecton: " + databaseCollection);
 	var db = pmongo(databaseConnectionString);
 	var logsCollection = db.collection(databaseCollection);
     
