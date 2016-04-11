@@ -22,8 +22,11 @@ module.exports = function (conf) {
     
     
 	var pmongo = require('promised-mongo');
-	var db = pmongo(conf.get("host") + '/' + conf.get("database"));
-	var logsCollection = db.collection(conf.get("logCollection"));
+    var databaseConnectionString = conf.get("host") + '/' + conf.get("database");
+    var databaseCollection = conf.get("logCollection");
+    console.log('Log viewering connecting to database: ' databaseConnectionString + ", collecton: " + databaseCollection);
+	var db = pmongo(databaseConnectionString);
+	var logsCollection = db.collection(databaseCollection);
     
     //the function that is called when new logs arrive from the database
     var newLogCallback;
