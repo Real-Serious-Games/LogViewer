@@ -71,7 +71,7 @@ angular.module('app', [
     $scope.selectedLog = null;
 
     // The number of logs to request from the server.
-    var requestSize = 1000;
+    var requestSize = 300;
 
     // Min logs that should be on screen (to make the scrollbar appear).
     var minLogsToDisplay = 100;
