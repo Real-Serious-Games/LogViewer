@@ -87,6 +87,10 @@ var startServer = function (conf, inputPlugin) {
             });
     });
     
+    app.get('/alive', function(req, res) {
+        res.status(200).end();
+    })
+    
     var io = socketio.listen(server);
     var data = [];
     
