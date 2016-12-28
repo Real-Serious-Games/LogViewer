@@ -21,12 +21,12 @@ module.exports = function (conf) {
     }
     
     
-	var pmongo = require('promised-mongo');
+    var pmongo = require('promised-mongo');
     var databaseConnectionString = conf.get("host") + '/' + conf.get("database");
     var databaseCollection = conf.get("logCollection");
     console.log('Log viewering connecting to database: ' + databaseConnectionString + ", collecton: " + databaseCollection);
-	var db = pmongo(databaseConnectionString);
-	var logsCollection = db.collection(databaseCollection);
+    var db = pmongo(databaseConnectionString);
+    var logsCollection = db.collection(databaseCollection);
     
     //the function that is called when new logs arrive from the database
     var newLogCallback;
@@ -52,9 +52,9 @@ module.exports = function (conf) {
             });
         });
 
-	return {
+    return {
         //callback is a function expects the new entry
-		on: function (callback) {
+        on: function (callback) {
             newLogCallback = callback;
         },
         
@@ -70,5 +70,5 @@ module.exports = function (conf) {
                 .skip(skip)
                 .toArray();
         }
-	}
+    }
 }
