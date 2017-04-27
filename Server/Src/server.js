@@ -1,5 +1,9 @@
 ﻿'use strict';
 
+process.on('uncaughtException', function (err) {
+    console.error('Uncaught Exception: ' + err.message + '\r\n' + err.stack);
+});
+
 var startServer = function (conf, inputPlugin) {
     
     if (!inputPlugin) {
@@ -47,7 +51,7 @@ var startServer = function (conf, inputPlugin) {
         console.log('Establishing connection with the input plugin method...');
         //set up tailable cursors for each
     
-        inputPlugin.on( function (doc) {
+        inputPlugin.on(function (doc) {
             clientManager.getClients()
                 .forEach(function(client) {
                     client.emit('update', doc);
@@ -118,9 +122,10 @@ if (require.main === module) {
     var argv = require('yargs').argv;
     var conf = require('confucious');
     var fs = require('fs');
+    var path = require('path');
     
     //set up the default path to the configuration file.
-    var configFilePath = "config.json";
+    var configFilePath = path.join(__dirname, "config.json");
     
     //set up the default plugin to use.
     conf.set("inputplugin", './mongodb-input');
@@ -137,13 +142,22 @@ if (require.main === module) {
         console.log('Loaded config file: ' + configFilePath);
         conf.pushJsonFile(configFilePath);
     } 
+    else {
+        console.log('No config file.');
+    }
     
     conf.pushArgv();
+
     
     //
     //Run from command line
     //
-    startServer(conf, require(conf.get("inputplugin"))(conf));
+    var inputModule = require(conf.get("inputplugin"));
+    inputModule(conf)
+        .then(inputPlugin => startServer(conf, inputPlugin))
+        .catch(err => {
+            console.error(err && err.stack || err);
+        });
 }
 else {
     //
