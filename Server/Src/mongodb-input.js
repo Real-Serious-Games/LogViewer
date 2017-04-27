@@ -50,7 +50,12 @@ module.exports = function (conf) {
                     newLogCallback(doc);
                 }
             });
-        });
+        })
+        .catch(function (err) {
+            console.error('Error getting log count.');
+            console.error(err && err.stack || err);
+        })
+        ;
 
     return {
         //callback is a function expects the new entry
