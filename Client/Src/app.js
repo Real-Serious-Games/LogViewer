@@ -163,7 +163,7 @@ angular.module('app', [
         } 
         else {
             return logsToFilter.filter(function (log) {
-                    return JSON.stringify(log).indexOf(filterText) !==  -1;
+                    return JSON.stringify(log).toLowerCase().indexOf(filterText) !==  -1;
                 });
         }
     };
