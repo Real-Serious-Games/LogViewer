@@ -1,18 +1,18 @@
-##LogViewer
+# LogViewer
 
 A front end viewer for displaying and querying a collection of logs. This system expects the logs to be in the [Serilog](http://serilog.net/) structured logging format. 
 
 The logs will also need to be stored somewhere. The LogViewer is set up to use a plugin style system for connecting to this source. Currently the source code includes a mongo db plugin called mongodb-input.js (which is used by default when run from the command line) that can be used as a guide for creating your own. It is also possible to pipe logs directly from the [RSG LogServer](https://github.com/Real-Serious-Games/LogServer) as it has also been designed to use plugins for it's output.
 
-##Installation
+## Installation
 	npm install -g rsg-log-viewer
 
 
-##Run
+## Run
 	rsg-log-viewer [options] 
 
 
-##Configuration
+## Configuration
 Edit the file config.json to set the port the server will run on. Any configuration needed for your input plugin will go in here as well and can be overridden on the command line. For instance if you want to use the default mongodb plugin you'd include the database configuration as follows.
 
 	{
@@ -24,7 +24,7 @@ Edit the file config.json to set the port the server will run on. Any configurat
 	}
 	
 	
-###Command line options
+### Command line options
 
 Option 			| Description
 :---: 			| ---
